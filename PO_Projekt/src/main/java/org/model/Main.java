@@ -1,7 +1,10 @@
 package org.model;
 
+import java.sql.SQLOutput;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        Board map = new Board(20, 15);
+        System.out.println(map.toString());
     }
 }

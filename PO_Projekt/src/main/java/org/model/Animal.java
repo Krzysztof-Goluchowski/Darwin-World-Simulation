@@ -3,7 +3,7 @@ package org.model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Animal {
+public class Animal implements WorldElement {
     private int energy;
     private Vector2D position;
     private MapDirection orientation;
@@ -33,4 +33,7 @@ public class Animal {
     }
 
 
+    public void move(Vector2D newPosition){
+        this.position = newPosition;
+    }
 }

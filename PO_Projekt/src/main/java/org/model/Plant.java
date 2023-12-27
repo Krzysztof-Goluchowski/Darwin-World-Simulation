@@ -1,6 +1,6 @@
 package org.model;
 
-public class Plant {
+public class Plant implements WorldElement {
     private final Vector2D position;
 
     public Plant(Vector2D position){
