@@ -9,11 +9,13 @@ public class Board {
     private final int width;
     private final int height;
     protected final Map<Vector2D, Animal> animals;
+    protected final Map<Vector2D, Plant> plants;
 
     public Board(int width, int height){
         this.width = width;
         this.height = height;
         this.animals = new HashMap<>();
+        this.plants = new HashMap<>();
     }
 
     public int getWidth() {
@@ -95,6 +97,13 @@ public class Board {
             animals.remove(animal.getPosition());
             animal.move(newPosition);
             animals.put(animal.getPosition(), animal);
+
+            // Zakladam, ze zwierze zje rosline zawszy gdy stanie na polu z istniejaca roslina
+            if (plants.containsKey(newPosition)) {
+                Plant plant = plants.get(newPosition);
+                animal.consumePlant(plant);
+                plants.remove(newPosition);
+            }
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
