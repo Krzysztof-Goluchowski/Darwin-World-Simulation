@@ -10,12 +10,13 @@ public enum MapDirection {
     WEST,
     NORTH_WEST;
 
-    public MapDirection direction(Animal animal, int num){
+    public static MapDirection newDirection(Animal animal, int num){
+
         int orientationNumber = getOrientationNumber(animal);
 
         int newDirection = (num + orientationNumber) % 8;
 
-        return switch (num) {
+        return switch (newDirection) {
             case 0 -> NORTH;
             case 1 -> NORTH_EAST;
             case 2 -> EAST;
@@ -28,7 +29,7 @@ public enum MapDirection {
         };
     }
 
-    public int getOrientationNumber(Animal animal) {
+    public static int getOrientationNumber(Animal animal) {
         MapDirection orientation = animal.getOrientation();
         return switch (orientation) {
             case NORTH -> 0;

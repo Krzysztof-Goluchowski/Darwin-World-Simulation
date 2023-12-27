@@ -18,6 +18,10 @@ public class Vector2D {
         return y;
     }
 
+    public Vector2D add(Vector2D unitVector) {
+        return new Vector2D(x + unitVector.getX(), y + unitVector.getY());
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -30,4 +34,6 @@ public class Vector2D {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+
 }
