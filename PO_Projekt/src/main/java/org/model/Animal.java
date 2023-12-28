@@ -6,10 +6,11 @@ import java.util.Random;
 
 public class Animal implements WorldElement {
     private int energy;
+    private int daysSurvived = 0;
     private Vector2D position;
     private MapDirection orientation;
-    private List<Integer> genotype;
-    private SimulationParameters params;
+    private final List<Integer> genotype;
+    private final SimulationParameters params;
 
     public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters){
         this.position = position;
@@ -21,6 +22,18 @@ public class Animal implements WorldElement {
 
     public void setOrientation(MapDirection orientation) {
         this.orientation = orientation;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public void setDaysSurvived(int daysSurvived) {
+        this.daysSurvived = daysSurvived;
+    }
+
+    public int getDaysSurvived() {
+        return daysSurvived;
     }
 
     public int getEnergy() {
@@ -114,10 +127,9 @@ public class Animal implements WorldElement {
         return genotype;
     }
 
-    public int nextMove() {
-        int element = genotype.remove(0);
-        genotype.add(element);
-        return element;
+    public int nextMove(int simulationDay) {
+        int move = genotype.get(simulationDay % genotype.size());
+        return move;
     }
 
     public String toString() {
