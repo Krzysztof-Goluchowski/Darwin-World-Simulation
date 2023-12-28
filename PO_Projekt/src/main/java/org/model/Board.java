@@ -2,18 +2,21 @@ package org.model;
 
 import org.model.util.MapVisualizer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static org.model.MapDirection.newDirection;
 
 public class Board {
     private final int width;
     private final int height;
-    protected final Map<Vector2D, Animal> animals;
+    private final Map<Vector2D, Animal> animals;
+    private final Map<Vector2D, Plant> plants;
 
     public Board(int width, int height){
         this.width = width;
         this.height = height;
         this.animals = new HashMap<>();
+        this.plants = new HashMap<>();
     }
 
     public int getWidth() {
@@ -33,12 +36,12 @@ public class Board {
     }
 
     public boolean canMoveTo(Vector2D position){
-        return !animals.containsKey(position);
+        return position.getY() < this.height && position.getY() >= 0;
     }
 
     public boolean place(Animal animal) {
         Vector2D position = animal.getPosition();
-        if (canMoveTo(position) && !animals.containsKey(position)) {
+        if (canMoveTo(position)) {
             animals.put(position, animal);
 //            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
             return true;
@@ -49,7 +52,7 @@ public class Board {
     public void move(Animal animal, int numDirection) {
         Vector2D newPosition = null;
 
-        MapDirection direction = MapDirection.newDirection(animal, numDirection);
+        MapDirection direction = newDirection(animal, numDirection);
 
         switch (direction){
             case NORTH -> {
@@ -89,11 +92,23 @@ public class Board {
             }
         }
 
+        if (newPosition != null && !canMoveTo(newPosition)) { //probowal wyjsc na biegun, nie wychodzi a jego orientacja zmienia sie na przeciwna, to dodanie 4
+            animal.setOrientation(MapDirection.newDirection(animal, 4));
+        }
+
         if (newPosition != null && canMoveTo(newPosition))  {
             Vector2D oldPosition = animal.getPosition();
 
             animals.remove(animal.getPosition());
             animal.move(newPosition);
+
+            // Zakladam, ze zwierze zje rosline zawszy gdy stanie na polu z istniejaca roslina
+            if (plants.containsKey(newPosition)) {
+                Plant plant = plants.get(newPosition);
+                animal.consumePlant(plant);
+                plants.remove(newPosition);
+            }
+
             animals.put(animal.getPosition(), animal);
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
