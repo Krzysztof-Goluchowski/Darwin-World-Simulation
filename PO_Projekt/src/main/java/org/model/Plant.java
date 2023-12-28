@@ -10,4 +10,8 @@ public class Plant implements WorldElement {
     public Vector2D getPosition(){
         return position;
     }
+
+    public String toString() {
+        return "*";
+    }
 }
