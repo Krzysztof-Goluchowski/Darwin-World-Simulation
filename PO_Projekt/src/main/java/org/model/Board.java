@@ -6,6 +6,7 @@ import java.util.*;
 
 import static org.model.MapDirection.newDirection;
 
+//Tworzy zwykla mape w wariancie bez tuneli
 public class Board {
     private final int width;
     private final int height;
@@ -60,11 +61,8 @@ public class Board {
         }
     }
 
-    public void move(Animal animal) {
-        Vector2D newPosition = null;
-
-        // funkcja zwracająca pierwszy gen z genotypu i przerzucająca go na koniec
-        int numDirection = animal.nextMove();
+    public void move(Animal animal, int numDirection) {
+        Vector2D newPosition;
 
         MapDirection direction = newDirection(animal, numDirection);
 
@@ -115,14 +113,6 @@ public class Board {
 
             animals.remove(animal.getPosition());
             animal.move(newPosition);
-
-            // Zakladam, ze zwierze zje rosline zawszy gdy stanie na polu z istniejaca roslina
-            if (plants.containsKey(newPosition)) {
-                Plant plant = plants.get(newPosition);
-                animal.consumePlant(plant);
-                plants.remove(newPosition);
-            }
-
             animals.put(animal.getPosition(), animal);
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
@@ -141,7 +131,6 @@ public class Board {
                     flag = true;
                 }
             }
-
         }
     }
 
