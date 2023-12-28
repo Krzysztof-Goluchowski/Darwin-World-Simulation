@@ -96,7 +96,11 @@ public class Board {
 
             animals.remove(animal.getPosition());
             animal.move(newPosition);
-            animals.put(animal.getPosition(), animal);
+
+            // Jesli na nowej pozycji jest zwierze gotowe do rozmnazania, zawsze sie rozmnazaja
+            if (animals.containsKey(newPosition)){ //tu trzeba dodac logike z rozmanazaniem
+                animals.put(newPosition, animal.reproduce(animals.get(newPosition)));
+            }
 
             // Zakladam, ze zwierze zje rosline zawszy gdy stanie na polu z istniejaca roslina
             if (plants.containsKey(newPosition)) {
@@ -104,6 +108,8 @@ public class Board {
                 animal.consumePlant(plant);
                 plants.remove(newPosition);
             }
+
+            animals.put(animal.getPosition(), animal);
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
