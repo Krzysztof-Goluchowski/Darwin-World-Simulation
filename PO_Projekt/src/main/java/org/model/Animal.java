@@ -18,6 +18,10 @@ public class Animal implements WorldElement {
         this.params = parameters;
     }
 
+    public void setOrientation(MapDirection orientation) {
+        this.orientation = orientation;
+    }
+
     public int getEnergy() {
         return energy;
     }
