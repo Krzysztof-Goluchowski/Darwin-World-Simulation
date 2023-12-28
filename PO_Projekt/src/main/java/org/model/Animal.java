@@ -1,16 +1,17 @@
 package org.model;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class Animal implements WorldElement {
     private int energy;
     private Vector2D position;
     private MapDirection orientation;
-    private LinkedList<Integer> genotype;
+    private List<Integer> genotype;
     private SimulationParameters params;
 
-    public Animal(Vector2D position, int energy, LinkedList<Integer> genotype, SimulationParameters parameters){
+    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters){
         this.position = position;
         this.energy = energy;
         this.genotype = genotype;
@@ -34,7 +35,7 @@ public class Animal implements WorldElement {
         return orientation;
     }
 
-    public LinkedList<Integer> getGenotype() {
+    public List<Integer> getGenotype() {
         return genotype;
     }
 
@@ -111,5 +112,25 @@ public class Animal implements WorldElement {
         }
 
         return genotype;
+    }
+
+    public int nextMove() {
+        int element = genotype.remove(0);
+        genotype.add(element);
+        return element;
+    }
+
+    public String toString() {
+        return switch (orientation) {
+            case NORTH -> "N";
+            case NORTH_EAST -> "NE";
+            case EAST -> "E";
+            case SOUTH_EAST -> "SE";
+            case SOUTH -> "S";
+            case SOUTH_WEST -> "SW";
+            case WEST -> "W";
+            case NORTH_WEST -> "NW";
+            default -> "NO DIRECTION";
+        };
     }
 }

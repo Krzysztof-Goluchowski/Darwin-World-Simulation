@@ -19,6 +19,14 @@ public class Board {
         this.plants = new HashMap<>();
     }
 
+    public Map<Vector2D, Animal> getAnimals() {
+        return animals;
+    }
+
+    public Map<Vector2D, Plant> getPlants() {
+        return plants;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -32,25 +40,31 @@ public class Board {
     }
 
     public WorldElement objectAt(Vector2D position) {
-        return animals.get(position);
+        if (animals.containsKey(position)) {
+            return animals.get(position);
+        } else if (plants.containsKey(position)){
+            return new Plant(position);
+        }
+        return null;
     }
 
     public boolean canMoveTo(Vector2D position){
         return position.getY() < this.height && position.getY() >= 0;
     }
 
-    public boolean place(Animal animal) {
+    public void place(Animal animal) {
         Vector2D position = animal.getPosition();
         if (canMoveTo(position)) {
             animals.put(position, animal);
 //            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
-            return true;
         }
-        return false;
     }
 
-    public void move(Animal animal, int numDirection) {
+    public void move(Animal animal) {
         Vector2D newPosition = null;
+
+        // funkcja zwracająca pierwszy gen z genotypu i przerzucająca go na koniec
+        int numDirection = animal.nextMove();
 
         MapDirection direction = newDirection(animal, numDirection);
 
@@ -113,6 +127,46 @@ public class Board {
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
+    }
+
+    // Generowanie roślin z większą szansą na równiku
+    public void generatePlants(int numOfPlants){
+        for (int i = 0; i < numOfPlants; i++){
+            boolean flag = false;
+
+            while (!flag){
+                Vector2D newPosition = generateNewPlantPosition();
+                if (!plants.containsKey(newPosition)){
+                    plants.put(newPosition, new Plant(newPosition));
+                    flag = true;
+                }
+            }
+
+        }
+    }
+
+    public Vector2D generateNewPlantPosition(){
+        int middleOfBoard = this.height / 2;
+        int radiusOfEquator = (int) (0.1 * this.height);
+        int bottomLimitOfEquator = middleOfBoard - radiusOfEquator;
+        int upperLimitOfEquator = middleOfBoard + radiusOfEquator;
+
+        Random random = new Random();
+        double losowaLiczba = random.nextDouble();
+
+        int newY = 0;
+
+        if (losowaLiczba < 0.8){ // Roślina wyrasta na równiku
+            newY = random.nextInt(2 * radiusOfEquator) + bottomLimitOfEquator;
+        } else if (losowaLiczba < 0.9){ // Roślina wyrasta pod równikiem
+            newY = random.nextInt(bottomLimitOfEquator);
+        } else { // Roślina wyrasta nad równikiem
+            newY = random.nextInt(bottomLimitOfEquator) + upperLimitOfEquator;
+        }
+
+        int newX = random.nextInt(this.width);
+
+        return new  Vector2D(newX, newY);
     }
 
     public String toString(){
