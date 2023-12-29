@@ -33,7 +33,7 @@ public class Simulation {
 
             // Skręt i przemieszczenie każdego zwierzaka.
             for (Animal animal : animalList) {
-                worldMap.move(animal, simulationDay);
+                worldMap.move(animal);
             }
 
             // Konsumpcja roślin, na których pola weszły zwierzaki.
@@ -59,6 +59,7 @@ public class Simulation {
                 animal.setEnergy(animal.getEnergy() - parameters.getEnergyLostPerDay());
                 animal.setDaysSurvived(animal.getDaysSurvived() + 1);
             }
+            System.out.println(worldMap);
         }
     }
 

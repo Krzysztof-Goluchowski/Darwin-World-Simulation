@@ -7,10 +7,21 @@ import java.util.Random;
 public class Animal implements WorldElement {
     private int energy;
     private int daysSurvived = 0;
+    private List<Animal> parents;
+    private int amountOfChildren = 0;
     private Vector2D position;
     private MapDirection orientation;
     private final List<Integer> genotype;
     private final SimulationParameters params;
+
+    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters, List<Animal> parents){
+        this.position = position;
+        this.energy = energy;
+        this.genotype = genotype;
+        this.orientation = MapDirection.NORTH;
+        this.params = parameters;
+        this.parents = parents;
+    }
 
     public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters){
         this.position = position;
@@ -71,7 +82,7 @@ public class Animal implements WorldElement {
         partner.energy -= params.getEnergyLostOnReproduction();
 
         LinkedList<Integer> childGenotype = crossoverGenotype(this, partner);
-        childGenotype = mutateGenotype(childGenotype);
+        mutateGenotype(childGenotype);
 
         return new Animal(this.getPosition(), params.getEnergyLostOnReproduction(), childGenotype, this.params);
     }
@@ -97,7 +108,7 @@ public class Animal implements WorldElement {
     }
 
     //Mutacje
-    private LinkedList<Integer> mutateGenotype(LinkedList<Integer> genotype) {
+    private void mutateGenotype(LinkedList<Integer> genotype) {
         Random rand = new Random();
 
         if (params.getMutationVariant() == SimulationParameters.MutationVariant.RANDOM){ //losowa liczba (wybranych również losowo) genów potomka zmienia swoje wartości na zupełnie nowe
@@ -124,11 +135,11 @@ public class Animal implements WorldElement {
             genotype.set(secondGeneIndex, firstGeneValue);
         }
 
-        return genotype;
     }
 
-    public int nextMove(int simulationDay) {
-        int move = genotype.get(simulationDay % genotype.size());
+    public int nextMove() {
+        int move = this.genotype.remove(0);
+        this.genotype.add(move);
         return move;
     }
 
