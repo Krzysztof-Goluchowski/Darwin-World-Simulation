@@ -14,14 +14,14 @@ public class Animal implements WorldElement {
     private final List<Integer> genotype;
     private final SimulationParameters params;
 
-    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters, List<Animal> parents){
-        this.position = position;
-        this.energy = energy;
-        this.genotype = genotype;
-        this.orientation = MapDirection.NORTH;
-        this.params = parameters;
-        this.parents = parents;
-    }
+//    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters, List<Animal> parents){
+//        this.position = position;
+//        this.energy = energy;
+//        this.genotype = genotype;
+//        this.orientation = MapDirection.NORTH;
+//        this.params = parameters;
+//        this.parents = parents;
+//    }
 
     public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters){
         this.position = position;

@@ -112,12 +112,21 @@ public class Board {
         if (newPosition != null && canMoveTo(newPosition))  {
             Vector2D oldPosition = animal.getPosition();
 
+            newPosition = roundEarth(newPosition);
+
             animals.remove(animal.getPosition());
             animal.move(newPosition);
             animals.put(animal.getPosition(), animal);
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
+    }
+
+    private Vector2D roundEarth(Vector2D newPosition) {
+        if (newPosition.getX() < 0){
+            return new Vector2D(width - 1, newPosition.getY());
+        }
+        return new Vector2D(newPosition.getX() % width, newPosition.getY());
     }
 
     // Generowanie roślin z większą szansą na równiku
