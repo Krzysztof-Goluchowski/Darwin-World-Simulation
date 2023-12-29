@@ -10,8 +10,8 @@ import static org.model.MapDirection.newDirection;
 public class Board {
     private final int width;
     private final int height;
-    private final Map<Vector2D, Animal> animals;
-    private final Map<Vector2D, Plant> plants;
+    private Map<Vector2D, Animal> animals;
+    private Map<Vector2D, Plant> plants;
 
     public Board(int width, int height){
         this.width = width;
@@ -61,8 +61,9 @@ public class Board {
         }
     }
 
-    public void move(Animal animal, int numDirection) {
+    public void move(Animal animal) {
         Vector2D newPosition;
+        int numDirection = animal.nextMove();
 
         MapDirection direction = newDirection(animal, numDirection);
 
