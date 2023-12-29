@@ -57,10 +57,11 @@ public class SimulationTest {
                 1);
 
         List<Integer> genotype = new LinkedList<>();
-        genotype.add(2);
+        genotype.add(0);
 
         Board map = new Board(5, 5);
         Animal chomik = new Animal(new Vector2D(3, 2), 10, genotype, simulationParameters);
+        chomik.setOrientation(MapDirection.EAST);
 
         map.move(chomik);
         assertEquals(chomik.getPosition(), new Vector2D(4,2));
@@ -72,9 +73,10 @@ public class SimulationTest {
         assertEquals(chomik.getPosition(), new Vector2D(1,2));
 
         List<Integer> genotype2 = new LinkedList<>();
-        genotype2.add(6);
+        genotype2.add(0);
 
         Animal chomik2 = new Animal(new Vector2D(1, 2), 10, genotype2, simulationParameters);
+        chomik2.setOrientation(MapDirection.WEST);
 
         map.move(chomik2);
         assertEquals(chomik2.getPosition(), new Vector2D(0,2));
@@ -100,9 +102,10 @@ public class SimulationTest {
         assertEquals(chomik3.getPosition(), new Vector2D(2,3));
 
         List<Integer> genotype4 = new LinkedList<>();
-        genotype4.add(4);
+        genotype4.add(0);
 
         Animal chomik4 = new Animal(new Vector2D(2, 1), 10, genotype4, simulationParameters);
+        chomik4.setOrientation(MapDirection.SOUTH);
 
         map.move(chomik4);
         assertEquals(chomik4.getPosition(), new Vector2D(2,0));

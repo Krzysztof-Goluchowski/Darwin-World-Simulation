@@ -63,6 +63,7 @@ public class Board {
 
     public void move(Animal animal) {
         Vector2D newPosition;
+        MapDirection newPotentialOrientation;
         int numDirection = animal.nextMove();
 
         MapDirection direction = newDirection(animal, numDirection);
@@ -71,34 +72,42 @@ public class Board {
             case NORTH -> {
                 Vector2D unitVector = MapDirection.NORTH.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.NORTH;
             }
             case NORTH_EAST -> {
                 Vector2D unitVector = MapDirection.NORTH_EAST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.NORTH_EAST;
             }
             case EAST -> {
                 Vector2D unitVector = MapDirection.EAST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.EAST;
             }
             case SOUTH_EAST -> {
                 Vector2D unitVector = MapDirection.SOUTH_EAST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.SOUTH_EAST;
             }
             case SOUTH -> {
                 Vector2D unitVector = MapDirection.SOUTH.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.SOUTH;
             }
             case SOUTH_WEST -> {
                 Vector2D unitVector = MapDirection.SOUTH_WEST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.SOUTH_WEST;
             }
             case WEST -> {
                 Vector2D unitVector = MapDirection.WEST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.WEST;
             }
             case NORTH_WEST -> {
                 Vector2D unitVector = MapDirection.NORTH_WEST.toUnitVector();
                 newPosition = animal.getPosition().add(unitVector);
+                newPotentialOrientation = MapDirection.NORTH_WEST;
             }
             default -> {
                 return;
@@ -116,6 +125,7 @@ public class Board {
 
             animals.remove(animal.getPosition());
             animal.move(newPosition);
+            animal.setOrientation(newPotentialOrientation);
             animals.put(animal.getPosition(), animal);
 
 //            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
@@ -156,7 +166,11 @@ public class Board {
         int newY = 0;
 
         if (losowaLiczba < 0.8){ // Roślina wyrasta na równiku
-            newY = random.nextInt(2 * radiusOfEquator) + bottomLimitOfEquator;
+            if (radiusOfEquator == 0){
+                newY = bottomLimitOfEquator;
+            } else {
+                newY = random.nextInt(2 * radiusOfEquator) + bottomLimitOfEquator;
+            }
         } else if (losowaLiczba < 0.9){ // Roślina wyrasta pod równikiem
             newY = random.nextInt(bottomLimitOfEquator);
         } else { // Roślina wyrasta nad równikiem
