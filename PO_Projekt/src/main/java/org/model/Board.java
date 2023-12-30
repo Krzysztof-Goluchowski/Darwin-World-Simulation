@@ -141,14 +141,17 @@ public class Board {
 
     // Generowanie roślin z większą szansą na równiku
     public void generatePlants(int numOfPlants){
+        int areaOfBoard = width * height;
         for (int i = 0; i < numOfPlants; i++){
-            boolean flag = false;
+            if (plants.size() < areaOfBoard) {
+                boolean flag = false;
 
-            while (!flag){
-                Vector2D newPosition = generateNewPlantPosition();
-                if (!plants.containsKey(newPosition)){
-                    plants.put(newPosition, new Plant(newPosition));
-                    flag = true;
+                while (!flag) {
+                    Vector2D newPosition = generateNewPlantPosition();
+                    if (!plants.containsKey(newPosition)) {
+                        plants.put(newPosition, new Plant(newPosition));
+                        flag = true;
+                    }
                 }
             }
         }
@@ -174,7 +177,11 @@ public class Board {
         } else if (losowaLiczba < 0.9){ // Roślina wyrasta pod równikiem
             newY = random.nextInt(bottomLimitOfEquator);
         } else { // Roślina wyrasta nad równikiem
-            newY = random.nextInt(bottomLimitOfEquator) + upperLimitOfEquator;
+            if (height % 2 == 0){
+                newY = random.nextInt(bottomLimitOfEquator) + upperLimitOfEquator;
+            } else {
+                newY = random.nextInt(bottomLimitOfEquator + 1) + upperLimitOfEquator;
+            }
         }
 
         int newX = random.nextInt(this.width);
