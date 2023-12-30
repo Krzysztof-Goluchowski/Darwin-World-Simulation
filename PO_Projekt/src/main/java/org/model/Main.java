@@ -7,7 +7,6 @@ public class Main {
         Board map = new Board(5, 5);
 
         SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
-
         Animal chomik = new Animal(simulationParameters);
         Animal chomik1 = new Animal(simulationParameters);
 
