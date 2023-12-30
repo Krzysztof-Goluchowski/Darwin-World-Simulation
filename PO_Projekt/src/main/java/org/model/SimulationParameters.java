@@ -21,7 +21,9 @@ public class SimulationParameters {
     private final MutationVariant mutationVariant;
     private final MapVariant mapVariant;
 
-    public SimulationParameters(int startingAmountOfPlants, int minReproduceEnergy, int energyLostOnReproduction, int minMutations, int maxMutations, MutationVariant mutationVariant, MapVariant mapVariant, int plantEnergy, int newPlantPerDay, int energyLostPerDay, int genotypeSize) {
+    private final int startingAnimalEnergy;
+
+    public SimulationParameters(int startingAmountOfPlants, int minReproduceEnergy, int energyLostOnReproduction, int minMutations, int maxMutations, MutationVariant mutationVariant, MapVariant mapVariant, int plantEnergy, int newPlantPerDay, int energyLostPerDay, int genotypeSize, int startingAnimalEnergy) {
         this.startingAmountOfPlants = startingAmountOfPlants;
         this.minReproduceEnergy = minReproduceEnergy;
         this.energyLostOnReproduction = energyLostOnReproduction;
@@ -33,11 +35,16 @@ public class SimulationParameters {
         this.energyLostPerDay = energyLostPerDay;
         this.genotypeSize = genotypeSize;
         this.mapVariant = mapVariant;
+        this.startingAnimalEnergy = startingAnimalEnergy;
     }
 
     //Gettery
     public int getMinReproduceEnergy() {
         return minReproduceEnergy;
+    }
+
+    public int getStartingAnimalEnergy() {
+        return startingAnimalEnergy;
     }
 
     public int getEnergyLostOnReproduction() {

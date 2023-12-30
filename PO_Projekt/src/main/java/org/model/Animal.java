@@ -23,10 +23,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
 //        this.parents = parents;
 //    }
 
-    public Animal(Vector2D position, int energy, SimulationParameters parameters){
-        this.position = position;
-        this.energy = energy;
+    public Animal(SimulationParameters parameters){
         this.params = parameters;
+        this.energy = parameters.getStartingAnimalEnergy();
         this.genotype = generateNewGenotype();
         this.orientation = MapDirection.NORTH;
     }
@@ -53,7 +52,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.daysSurvived = daysSurvived;
     }
 
-
+    public void setPosition(Vector2D position) {
+        this.position = position;
+    }
 
     public int getDaysSurvived() {
         return daysSurvived;

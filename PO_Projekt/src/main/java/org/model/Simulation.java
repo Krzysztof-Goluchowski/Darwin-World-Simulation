@@ -18,6 +18,9 @@ public class Simulation {
     public void run() {
         // Umieszczamy zwierzęta na mapie
         for (Animal animal : animalList) {
+            if (animal.getPosition() == null){
+                generateNewPosition(animal);
+            }
             worldMap.place(animal);
         }
         //Tworze startowa liczbe roslin
@@ -59,6 +62,13 @@ public class Simulation {
             }
             System.out.println(worldMap);
         }
+    }
+
+    public void generateNewPosition(Animal animal){
+        Random random = new Random();
+        int x = random.nextInt();
+        int y = random.nextInt();
+        animal.setPosition(new Vector2D(x, y));
     }
 
     private void reproduceAnimals() {

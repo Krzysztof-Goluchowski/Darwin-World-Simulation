@@ -8,7 +8,7 @@ public class BoardWithTunnels extends Board {
     private final int height;
     private final Map<Vector2D, Animal> animals;
     private final Map<Vector2D, Plant> plants;
-    List<Map<Vector2D, Vector2D>> tunnelsMaps;
+    Map<Vector2D, Vector2D> tunnelsMaps;
 
     public BoardWithTunnels(int width, int height, int numberOfTunnels){
         super(width, height);
@@ -16,7 +16,7 @@ public class BoardWithTunnels extends Board {
         this.height = height;
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
-        this.tunnelsMaps = List.of(new HashMap<>(), new HashMap<>());
+        this.tunnelsMaps = new HashMap<>();
 
         //Losuje pary punktow i dodaje do dwoch HashMap w tunnelsMpas
         Random random = new Random();
@@ -33,28 +33,24 @@ public class BoardWithTunnels extends Board {
 
             Vector2D point2 = new Vector2D(x2, y2);
 
-            tunnelsMaps.get(0).put(point1, point2);
-            tunnelsMaps.get(1).put(point2, point1);
+            tunnelsMaps.put(point1, point2);
+            tunnelsMaps.put(point2, point1);
         }
     }
+
+    public void setTunnelsMaps(Map<Vector2D, Vector2D> tunnelsMaps) {
+        this.tunnelsMaps = tunnelsMaps;
+    }
+
     @Override //Nadpisanie move aby uwzglednial wejscie na tunel
     public void move(Animal animal) {
-        super.move(animal); // Wywołanie oryginalnej metody move
-
         // Sprawdzanie, czy nowa pozycja zwierzęcia jest wejściem do tunelu
-        for (Map<Vector2D, Vector2D> tunnelMap : tunnelsMaps) {
-            Vector2D newPosition = animal.getPosition();
-            if (tunnelMap.containsKey(newPosition)) {
-                Vector2D tunnelExit = tunnelMap.get(newPosition);
-
-                if(plants.containsKey(newPosition)){ //no tutaj jest problem z tym jedzniem roslin
-                    animal.consumePlant(plants.get(newPosition));
-                }
-
-                animal.move(tunnelExit); // Przeniesienie zwierzęcia na drugi koniec tunelu
-                animal.nextMove(); //Przesuwam gen na nastepny po przejsciu przez tunel
-                break;
-            }
+        Vector2D animalPosition = animal.getPosition();
+        if (tunnelsMaps.containsKey(animalPosition)){
+            Vector2D tunnelExit = tunnelsMaps.get(animalPosition);
+            animal.move(tunnelExit);
         }
+
+        super.move(animal); // Wywołanie oryginalnej metody move
     }
 }
