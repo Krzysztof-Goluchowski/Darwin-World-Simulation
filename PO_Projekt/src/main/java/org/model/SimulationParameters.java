@@ -10,13 +10,18 @@ public class SimulationParameters {
     private final int newPlantPerDay;
     private final int energyLostPerDay;
     private final int genotypeSize;
+    private final int plantEnergy;
+
     public enum MutationVariant {
         RANDOM, SWAP
     }
+    public enum MapVariant{
+        STANDARD, TUNNELS
+    }
     private final MutationVariant mutationVariant;
-    private final int plantEnergy;
+    private final MapVariant mapVariant;
 
-    public SimulationParameters(int startingAmountOfPlants, int minReproduceEnergy, int energyLostOnReproduction, int minMutations, int maxMutations, MutationVariant mutationVariant, int plantEnergy, int newPlantPerDay, int energyLostPerDay, int genotypeSize) {
+    public SimulationParameters(int startingAmountOfPlants, int minReproduceEnergy, int energyLostOnReproduction, int minMutations, int maxMutations, MutationVariant mutationVariant, MapVariant mapVariant, int plantEnergy, int newPlantPerDay, int energyLostPerDay, int genotypeSize) {
         this.startingAmountOfPlants = startingAmountOfPlants;
         this.minReproduceEnergy = minReproduceEnergy;
         this.energyLostOnReproduction = energyLostOnReproduction;
@@ -27,6 +32,7 @@ public class SimulationParameters {
         this.newPlantPerDay = newPlantPerDay;
         this.energyLostPerDay = energyLostPerDay;
         this.genotypeSize = genotypeSize;
+        this.mapVariant = mapVariant;
     }
 
     //Gettery
@@ -68,5 +74,8 @@ public class SimulationParameters {
 
     public int getGenotypeSize() {
         return genotypeSize;
+    }
+    public MapVariant getMapVariant() {
+        return mapVariant;
     }
 }

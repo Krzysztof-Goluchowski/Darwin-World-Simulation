@@ -37,4 +37,24 @@ public class BoardWithTunnels extends Board {
             tunnelsMaps.get(1).put(point2, point1);
         }
     }
+    @Override //Nadpisanie move aby uwzglednial wejscie na tunel
+    public void move(Animal animal) {
+        super.move(animal); // Wywołanie oryginalnej metody move
+
+        // Sprawdzanie, czy nowa pozycja zwierzęcia jest wejściem do tunelu
+        for (Map<Vector2D, Vector2D> tunnelMap : tunnelsMaps) {
+            Vector2D newPosition = animal.getPosition();
+            if (tunnelMap.containsKey(newPosition)) {
+                Vector2D tunnelExit = tunnelMap.get(newPosition);
+
+                if(plants.containsKey(newPosition)){ //no tutaj jest problem z tym jedzniem roslin
+                    animal.consumePlant(plants.get(newPosition));
+                }
+
+                animal.move(tunnelExit); // Przeniesienie zwierzęcia na drugi koniec tunelu
+                animal.nextMove(); //Przesuwam gen na nastepny po przejsciu przez tunel
+                break;
+            }
+        }
+    }
 }
