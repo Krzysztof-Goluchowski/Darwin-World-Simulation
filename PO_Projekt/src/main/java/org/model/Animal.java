@@ -159,7 +159,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
             for (int i = 0; i < numberOfMutations; i++) {
                 int geneIndex = rand.nextInt(genotype.size());
-                int newGeneValue = rand.nextInt(8);
+                int currentGeneValue = genotype.get(geneIndex);
+                int newGeneValue;
+                do {
+                    newGeneValue = rand.nextInt(8);
+                } while (newGeneValue == currentGeneValue);
                 genotype.set(geneIndex, newGeneValue);
             }
         }
