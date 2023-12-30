@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PO_2023_PT1120_GOLUCHOWSKI-GRZES_PROJEKT.iml" filepath="$PROJECT_DIR$/.idea/PO_2023_PT1120_GOLUCHOWSKI-GRZES_PROJEKT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PO_Projekt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PO_Projekt.main.iml" />
     </modules>
   </component>
 </project>

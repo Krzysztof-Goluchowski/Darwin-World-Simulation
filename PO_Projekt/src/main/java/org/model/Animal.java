@@ -9,6 +9,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private int daysSurvived = 0;
     private List<Animal> parents;
     private int amountOfChildren = 0;
+    private int howManyPlantsEaten = 0;
+    private int dayOfDeath;
     private Vector2D position;
     private MapDirection orientation;
     private final List<Integer> genotype;
@@ -23,6 +25,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 //        this.parents = parents;
 //    }
 
+    //Adam i Ewa
     public Animal(SimulationParameters parameters){
         this.params = parameters;
         this.energy = parameters.getStartingAnimalEnergy();
@@ -38,7 +41,15 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.params = parameters;
     }
 
-
+    //Konstruktor do zliczania potomkow
+    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters, List<Animal> parents){
+        this.position = position;
+        this.energy = energy;
+        this.genotype = genotype;
+        this.orientation = MapDirection.NORTH;
+        this.params = parameters;
+        this.parents = parents;
+    }
 
     public void setOrientation(MapDirection orientation) {
         this.orientation = orientation;
@@ -54,6 +65,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public void setPosition(Vector2D position) {
         this.position = position;
+    }
+
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
     }
 
     public int getDaysSurvived() {
@@ -77,17 +92,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
 
-
     public void move(Vector2D newPosition){
         this.position = newPosition;
     }
 
     public void consumePlant(Plant plant){
         this.energy += params.getPlantEnergy();
+        howManyPlantsEaten++;
     }
 
     public boolean isReadyToReproduce() {
-        return this.energy >= params.getMinReproduceEnergy();
+        return this.energy > params.getMinReproduceEnergy();
     }
 
     //Zwraca dziecko
@@ -95,10 +110,24 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.energy -= params.getEnergyLostOnReproduction();
         partner.energy -= params.getEnergyLostOnReproduction();
 
+        List<Animal> childParents = List.of(this, partner);
+        increaseChildrenCountForAncestors(childParents);
+
         LinkedList<Integer> childGenotype = crossoverGenotype(this, partner);
         mutateGenotype(childGenotype);
 
-        return new Animal(this.getPosition(), params.getEnergyLostOnReproduction(), childGenotype, this.params);
+        return new Animal(this.getPosition(), params.getEnergyLostOnReproduction(), childGenotype, this.params, childParents);
+    }
+
+    //Zwieksza ilosc potomkow dla kazdego ze zwierzat
+    private void increaseChildrenCountForAncestors(List<Animal> ancestors) {
+        if (ancestors == null) {
+            return;
+        }
+        for (Animal ancestor : ancestors) {
+            ancestor.amountOfChildren++;
+            increaseChildrenCountForAncestors(ancestor.parents);
+        }
     }
 
     //Krzyzuje geny rodzicow

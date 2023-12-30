@@ -29,7 +29,12 @@ public class Simulation {
 
         while (!animalList.isEmpty()) {
             // Usunięcie martwych zwierzaków z mapy.
-            animalList.removeIf(animal -> animal.getEnergy() <= 0);
+            for (Animal animal : animalList) {
+                if(animal.getEnergy() <= 0){
+                    animalList.remove(animal);
+                    animal.setDayOfDeath(simulationDay);
+                }
+            }
 
             // Skręt i przemieszczenie każdego zwierzaka.
             for (Animal animal : animalList) {
