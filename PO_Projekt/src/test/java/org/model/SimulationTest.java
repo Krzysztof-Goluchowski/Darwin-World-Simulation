@@ -11,10 +11,7 @@ public class SimulationTest {
 
     @Test
     public void testPlace(){
-        SimulationParameters simulationParameters = new SimulationParameters(25,
-                5, 5, 0, 0,
-                SimulationParameters.MutationVariant.RANDOM, 2, 0, 1,
-                1);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
 
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
@@ -30,10 +27,7 @@ public class SimulationTest {
 
     @Test
     public void testMove(){
-        SimulationParameters simulationParameters = new SimulationParameters(25,
-                5, 5, 0, 0,
-                SimulationParameters.MutationVariant.RANDOM, 2, 0, 1,
-                1);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
 
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
@@ -51,10 +45,7 @@ public class SimulationTest {
 
     @Test
     public void testBoundaries(){
-        SimulationParameters simulationParameters = new SimulationParameters(25,
-                5, 5, 0, 0,
-                SimulationParameters.MutationVariant.RANDOM, 2, 0, 1,
-                1);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
 
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
@@ -119,10 +110,7 @@ public class SimulationTest {
 
     @Test
     public void testConsumePlant(){
-        SimulationParameters simulationParameters = new SimulationParameters(25,
-                5, 5, 0, 0,
-                SimulationParameters.MutationVariant.RANDOM, 2, 0, 1,
-                1);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
 
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
@@ -136,7 +124,7 @@ public class SimulationTest {
 
         chomik.setEnergy(chomik.getEnergy() - simulationParameters.getEnergyLostPerDay());
 
-        assertEquals(chomik.getEnergy(), 9);
+        assertEquals(chomik.getEnergy(), 5);
 
         Map<Vector2D, Plant> plantsMap = new HashMap<>();
         plantsMap.put(new Vector2D(2, 3), new Plant(new Vector2D(2, 3)));
@@ -148,16 +136,13 @@ public class SimulationTest {
             plantsMap.remove(animalPosition);
         }
 
-        assertEquals(chomik.getEnergy(), 11);
+        assertEquals(chomik.getEnergy(), 7);
 
     }
 
     @Test
     public void testReproduce(){
-        SimulationParameters simulationParameters = new SimulationParameters(25,
-                5, 5, 0, 0,
-                SimulationParameters.MutationVariant.RANDOM, 2, 0, 1,
-                1);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
 
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
