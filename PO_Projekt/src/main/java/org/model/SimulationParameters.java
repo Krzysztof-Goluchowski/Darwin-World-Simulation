@@ -20,7 +20,6 @@ public class SimulationParameters {
     }
     private final MutationVariant mutationVariant;
     private final MapVariant mapVariant;
-
     private final int startingAnimalEnergy;
 
     public SimulationParameters(int startingAmountOfPlants, int minReproduceEnergy, int energyLostOnReproduction, int minMutations, int maxMutations, MutationVariant mutationVariant, MapVariant mapVariant, int plantEnergy, int newPlantPerDay, int energyLostPerDay, int genotypeSize, int startingAnimalEnergy) {
@@ -82,6 +81,7 @@ public class SimulationParameters {
     public int getGenotypeSize() {
         return genotypeSize;
     }
+
     public MapVariant getMapVariant() {
         return mapVariant;
     }

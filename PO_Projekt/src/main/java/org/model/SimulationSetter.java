@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class SimulationApp extends Application {
+public class SimulationSetter extends Application {
     // Atrybuty klasy dla elementów interfejsu użytkownika
     private final TextField startingAmountOfPlantsField = new TextField();
     private final TextField minReproduceEnergyField = new TextField();
@@ -23,6 +23,7 @@ public class SimulationApp extends Application {
     private final TextField mapHeightField = new TextField();
     private final TextField mapWidthField = new TextField();
     private final TextField animalsAmountOnStartField = new TextField();
+    private final TextField numberOfTunnelsField = new TextField();
     private final ComboBox<SimulationParameters.MutationVariant> mutationVariantComboBox = new ComboBox<>();
     private final ComboBox<SimulationParameters.MapVariant> mapVariantComboBox = new ComboBox<>();
 
@@ -48,6 +49,19 @@ public class SimulationApp extends Application {
         Label mapHeightLabel = new Label("Map height: ");
         Label mapWidthLabel = new Label("Map width: ");
         Label animalsAmountOnStartLabel = new Label("How many animals on start: ");
+        Label numberOfTunnelsLabel = new Label("Number of tunnels:");
+
+        numberOfTunnelsLabel.setVisible(false);
+        numberOfTunnelsField.setVisible(false);
+        mapVariantComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == SimulationParameters.MapVariant.TUNNELS) {
+                numberOfTunnelsLabel.setVisible(true);
+                numberOfTunnelsField.setVisible(true);
+            } else {
+                numberOfTunnelsLabel.setVisible(false);
+                numberOfTunnelsField.setVisible(false);
+            }
+        });
 
         mutationVariantComboBox.getItems().addAll(SimulationParameters.MutationVariant.values());
 
@@ -88,6 +102,8 @@ public class SimulationApp extends Application {
 
         grid.add(mapVariantLabel, 0, 11);
         grid.add(mapVariantComboBox, 1, 11);
+        grid.add(numberOfTunnelsLabel, 2, 11);
+        grid.add(numberOfTunnelsField, 3, 11);
 
         grid.add(mutationVariantLabel, 0, 12);
         grid.add(mutationVariantComboBox, 1, 12);
@@ -105,13 +121,11 @@ public class SimulationApp extends Application {
         grid.add(runButton, 1, 16);
         runButton.setOnAction(e -> runSimulation());
 
-        Scene scene = new Scene(grid, 400, 600);
+        Scene scene = new Scene(grid, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulation Parameters");
         primaryStage.show();
     }
-
-
 
     private void runSimulation() {
         try {
@@ -128,32 +142,38 @@ public class SimulationApp extends Application {
             int animalsAmountOnStart = Integer.parseInt(animalsAmountOnStartField.getText());
             int mapHeight = Integer.parseInt(mapHeightField.getText());
             int mapWidth = Integer.parseInt(mapWidthField.getText());
+            int numberofTunnels = Integer.parseInt(numberOfTunnelsField.getText());
 
             SimulationParameters.MutationVariant mutationVariant = mutationVariantComboBox.getValue();
             SimulationParameters.MapVariant mapVariant = mapVariantComboBox.getValue();
 
             SimulationParameters parameters = new SimulationParameters(startingAmountOfPlants, minReproduceEnergy, energyLostOnReproduction, minMutations, maxMutations, mutationVariant, mapVariant, plantEnergy, newPlantsPerDay, energyLostPerDay, genotypeSize, startingAnimalEnergy);
 
-            // Utwórz i uruchom symulację, na razie tylko board bez tuneli
-            Board map = new Board(mapWidth, mapHeight);
-
             ArrayList<Animal> animalsList = new ArrayList<>();
-            for(int i = 0; i < animalsAmountOnStart; i++){
+            for (int i = 0; i < animalsAmountOnStart; i++) {
                 Animal animal = new Animal(parameters);
                 animalsList.add(animal);
             }
 
-            Simulation simulation = new Simulation(parameters, map, animalsList);
-            simulation.run();
+            //To chyba nie jest cleancodexD
+            if (mapVariant == SimulationParameters.MapVariant.TUNNELS){
+                BoardWithTunnels map = new BoardWithTunnels(mapWidth, mapHeight, numberofTunnels);
+                Simulation simulation = new Simulation(parameters, map, animalsList);
+                simulation.run();
+            }
+            else {
+                Board map = new Board(mapWidth, mapHeight);
+                Simulation simulation = new Simulation(parameters, map, animalsList);
+                simulation.run();
+            }
 
-        } catch (NumberFormatException e) { //Jesli cos poszlo nie tak i uzytkownik wpisal zly format wyswietli sie okienko i zostano przywrocone ustawienia domyslne
+        } catch (NumberFormatException e) { //Zly format danych
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Wrong input format!");
             alert.setHeaderText("Dumny ty jestes z siebie?");
             alert.setContentText("Enter valid input format");
             alert.showAndWait();
 
-            // Przywróć domyślne wartości
             setToDefault();
         }
     }
@@ -172,6 +192,7 @@ public class SimulationApp extends Application {
         mapWidthField.setText("5");
         mapHeightField.setText("5");
         animalsAmountOnStartField.setText("2");
+        numberOfTunnelsField.setText("5");
 
         mutationVariantComboBox.setValue(SimulationParameters.MutationVariant.RANDOM);
         mapVariantComboBox.setValue(SimulationParameters.MapVariant.STANDARD);
