@@ -65,4 +65,8 @@ public class SimulationParameters {
     public int getEnergyLostPerDay() {
         return energyLostPerDay;
     }
+
+    public int getGenotypeSize() {
+        return genotypeSize;
+    }
 }

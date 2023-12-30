@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class Animal implements WorldElement {
+public class Animal implements WorldElement, Comparable<Animal> {
     private int energy;
     private int daysSurvived = 0;
     private List<Animal> parents;
@@ -23,6 +23,14 @@ public class Animal implements WorldElement {
 //        this.parents = parents;
 //    }
 
+    public Animal(Vector2D position, int energy, SimulationParameters parameters){
+        this.position = position;
+        this.energy = energy;
+        this.params = parameters;
+        this.genotype = generateNewGenotype();
+        this.orientation = MapDirection.NORTH;
+    }
+
     public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters){
         this.position = position;
         this.energy = energy;
@@ -30,6 +38,8 @@ public class Animal implements WorldElement {
         this.orientation = MapDirection.NORTH;
         this.params = parameters;
     }
+
+
 
     public void setOrientation(MapDirection orientation) {
         this.orientation = orientation;
@@ -42,6 +52,8 @@ public class Animal implements WorldElement {
     public void setDaysSurvived(int daysSurvived) {
         this.daysSurvived = daysSurvived;
     }
+
+
 
     public int getDaysSurvived() {
         return daysSurvived;
@@ -62,6 +74,7 @@ public class Animal implements WorldElement {
     public List<Integer> getGenotype() {
         return genotype;
     }
+
 
 
     public void move(Vector2D newPosition){
@@ -141,6 +154,37 @@ public class Animal implements WorldElement {
         int move = this.genotype.remove(0);
         this.genotype.add(move);
         return move;
+    }
+
+    public List<Integer> generateNewGenotype(){
+        int numOfGens = params.getGenotypeSize();
+        LinkedList<Integer> newGenotype = new LinkedList<>();
+        for (int i = 0; i < numOfGens; i++){
+            int random = new Random().nextInt(8);
+            newGenotype.add(random);
+        }
+        return newGenotype;
+    }
+
+    @Override
+    public int compareTo(Animal other) {
+        // Pierwszeństwo mają organizmy o największej energii
+        if (this.energy != other.energy) {
+            return Integer.compare(other.energy, this.energy);
+        }
+
+        // Jeżeli nie pozwala to rozstrzygnąć, to pierwszeństwo mają organizmy najstarsze
+        if (this.daysSurvived != other.daysSurvived) {
+            return Integer.compare(other.daysSurvived, this.daysSurvived);
+        }
+
+        // Jeżeli to nie pozwala rozstrzygnąć, to pierwszeństwo mają organizmy o największej liczbie dzieci
+        if (this.amountOfChildren != other.amountOfChildren) {
+            return Integer.compare(other.amountOfChildren, this.amountOfChildren);
+        }
+
+        // Jeżeli to nie pozwala rozstrzygnąć, to wybieramy losowo
+        return new Random().nextInt(2) == 0 ? -1 : 1;
     }
 
     public String toString() {

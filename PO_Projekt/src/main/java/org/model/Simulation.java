@@ -1,9 +1,6 @@
 package org.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //Analogiczna klasa do tej z labow
 public class Simulation {
@@ -38,6 +35,7 @@ public class Simulation {
 
             // Konsumpcja roślin, na których pola weszły zwierzaki.
             Map<Vector2D, Plant> plantsMap = worldMap.getPlants();
+            Collections.sort(animalList);  // Rozstrzygamy tym możliwe konflikty
             for (Animal animal : animalList) {
                 if (plantsMap.containsKey(animal.getPosition())) {
                     Vector2D animalPosition = animal.getPosition();
@@ -74,6 +72,7 @@ public class Simulation {
         // Przeszukiwanie każdej pozycji w poszukiwaniu par do rozmnażania
         for (List<Animal> animalsOnPosition : animalsByPosition.values()) {
             if (animalsOnPosition.size() >= 2) {
+                Collections.sort(animalsOnPosition); // Rozstrzygamy tym możliwe konflikty
                 for (int i = 0; i < animalsOnPosition.size(); i++) {
                     Animal animal1 = animalsOnPosition.get(i);
                     if (animal1.isReadyToReproduce()) {
