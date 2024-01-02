@@ -1,5 +1,6 @@
 package org.model;
 
+import org.model.util.ConsoleMapDisplay;
 import org.model.util.MapVisualizer;
 
 import java.util.*;
@@ -13,11 +14,17 @@ public class Board {
     private Map<Vector2D, Animal> animals;
     private Map<Vector2D, Plant> plants;
 
+    private ConsoleMapDisplay observer;
+
     public Board(int width, int height){
         this.width = width;
         this.height = height;
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
+    }
+
+    public void setObserver(ConsoleMapDisplay observer) {
+        this.observer = observer;
     }
 
     public Map<Vector2D, Animal> getAnimals() {
@@ -57,7 +64,7 @@ public class Board {
         Vector2D position = animal.getPosition();
         if (canMoveTo(position)) {
             animals.put(position, animal);
-//            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
+            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
         }
     }
 
@@ -128,8 +135,12 @@ public class Board {
             animal.setOrientation(newPotentialOrientation);
             animals.put(animal.getPosition(), animal);
 
-//            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
+            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
+    }
+
+    public void notifyObservers(String message){
+        observer.mapChanged(this, message);
     }
 
     private Vector2D roundEarth(Vector2D newPosition) {

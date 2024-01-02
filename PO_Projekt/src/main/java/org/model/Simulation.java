@@ -29,12 +29,14 @@ public class Simulation {
 
         while (!animalList.isEmpty()) {
             // Usunięcie martwych zwierzaków z mapy.
+            ArrayList<Animal> deadAnimals = new ArrayList<>();
             for (Animal animal : animalList) {
                 if(animal.getEnergy() <= 0){
-                    animalList.remove(animal);
-                    animal.setDayOfDeath(simulationDay);
+                    deadAnimals.add(animal);
                 }
             }
+
+            removeDeadAnimals(deadAnimals);
 
             // Skręt i przemieszczenie każdego zwierzaka.
             for (Animal animal : animalList) {
@@ -65,14 +67,19 @@ public class Simulation {
                 animal.setEnergy(animal.getEnergy() - parameters.getEnergyLostPerDay());
                 animal.setDaysSurvived(animal.getDaysSurvived() + 1);
             }
-            System.out.println(worldMap);
+        }
+    }
+
+    private void removeDeadAnimals(ArrayList<Animal> deadAnimals) {
+        for (Animal animal : deadAnimals){
+            animalList.remove(animal);
         }
     }
 
     public void generateNewPosition(Animal animal){
         Random random = new Random();
-        int x = random.nextInt();
-        int y = random.nextInt();
+        int x = random.nextInt(worldMap.getWidth());
+        int y = random.nextInt(worldMap.getHeight());
         animal.setPosition(new Vector2D(x, y));
     }
 
