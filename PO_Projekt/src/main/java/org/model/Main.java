@@ -18,6 +18,8 @@ public class Main {
         chomik1.setEnergy(0);
 
         Simulation simulation = new Simulation(simulationParameters, map, List.of(chomik, chomik1));
-        simulation.run();
+        SimulationEngine engine = new SimulationEngine(List.of(simulation));
+
+        engine.runAsync();
     }
 }
