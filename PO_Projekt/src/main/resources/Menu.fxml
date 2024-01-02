@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.model.presenter.SimulationPresenter"
+            alignment="CENTER">
+
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60" />
+    </rowConstraints>
+
+    <Label text="Min Reproduce Energy: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="minReproduceEnergyLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" text="10"/>
+
+    <Label text="Enerdy Lost On Reproduction: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="energyLostOnReproductionLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" text="10"/>
+
+    <Label text="Min Mutations: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="minMutationsLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" text="1"/>
+
+    <Label text="Max Mutations: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="maxMutationsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" text="3"/>
+
+    <Label text="Starting Amount Of Plants:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingAmountOfPlantsLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" text="10"/>
+
+    <Label text="Amount Of New Plants Per Day: " GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <TextField fx:id="newPlantPerDayLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" text="2"/>
+
+    <Label text="Plant Energy: " GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <TextField fx:id="plantEnergyLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" text="1"/>
+
+    <Label text="Energy Lost Per Day: " GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <TextField fx:id="energyLostPerDayLabel" GridPane.rowIndex="7" GridPane.columnIndex="1" text="1"/>
+
+    <Label text="Genotype Size: " GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <TextField fx:id="genotypeSizeLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" text="5"/>
+
+    <Label text="Starting Animal Energy: " GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <TextField fx:id="startingAnimalEnergyLabel" GridPane.rowIndex="9" GridPane.columnIndex="1" text="10"/>
+
+    <Label text="Amount Of Animals On Start: " GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+    <TextField fx:id="animalsAmountOnStartLabel" GridPane.rowIndex="10" GridPane.columnIndex="1" text="2"/>
+
+    <Label text="Map Variant: " GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="mapVariantComboBox" GridPane.rowIndex="11" GridPane.columnIndex="1" value="STANDARD">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="STANDARD" />
+                <String fx:value="TUNNELS" />
+            </FXCollections>
+        </items>
+    </ComboBox>
+
+    <Label text="Mutation Variant: " GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="mutationVariantComboBox" GridPane.rowIndex="12" GridPane.columnIndex="1" value="RANDOM">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="RANDOM" />
+                    <String fx:value="SWAP" />
+                </FXCollections>
+            </items>
+    </ComboBox>
+
+    <Label text="Map Height: " GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+    <TextField fx:id="mapHeightLabel" GridPane.rowIndex="13" GridPane.columnIndex="1" text="20"/>
+
+    <Label text="Map Width: " GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+    <TextField fx:id="mapWidthLabel" GridPane.rowIndex="14" GridPane.columnIndex="1" text="50"/>
+
+    <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+    <TextField fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" text="3"/>
+
+    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked"/>
+</GridPane>
