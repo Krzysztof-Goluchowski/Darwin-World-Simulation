@@ -1,6 +1,7 @@
 package org.model;
 
 import org.junit.jupiter.api.Test;
+import org.model.util.ConsoleMapDisplay;
 
 import java.util.*;
 
@@ -17,6 +18,10 @@ public class SimulationTest {
         genotype.add(0);
 
         Board map = new Board(5, 5);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
+
         Animal chomik = new Animal(new Vector2D(2, 2), 10, genotype, simulationParameters);
 
         assertNotEquals(map.objectAt(new Vector2D(2, 2)), chomik);
@@ -33,6 +38,10 @@ public class SimulationTest {
         genotype.add(0);
 
         Board map = new Board(5, 5);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
+
         Animal chomik = new Animal(new Vector2D(2, 2), 10, genotype, simulationParameters);
 
         map.place(chomik);
@@ -51,6 +60,10 @@ public class SimulationTest {
         genotype.add(0);
 
         Board map = new Board(5, 5);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
+
         Animal chomik = new Animal(new Vector2D(3, 2), 10, genotype, simulationParameters);
         chomik.setOrientation(MapDirection.EAST);
 
@@ -116,6 +129,10 @@ public class SimulationTest {
         genotype.add(0);
 
         Board map = new Board(5, 5);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
+
         Animal chomik = new Animal(new Vector2D(2, 2), 10, genotype, simulationParameters);
 
         map.place(chomik);
@@ -148,6 +165,10 @@ public class SimulationTest {
         genotype.add(0);
 
         Board map = new Board(5, 5);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
+
         Animal chomik1 = new Animal(new Vector2D(2, 2), 10, genotype, simulationParameters);
         Animal chomik2 = new Animal(new Vector2D(2, 2), 10, genotype, simulationParameters);
 

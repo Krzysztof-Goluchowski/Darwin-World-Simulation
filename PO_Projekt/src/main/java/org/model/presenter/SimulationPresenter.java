@@ -85,7 +85,21 @@ public class SimulationPresenter {
             mapVariant = SimulationParameters.MapVariant.TUNNELS;
         }
 
-        return new SimulationParameters(startingAmountOfPlants, minReproduceEnergy, energyLostOnReproduction, minMutations, maxMutations, mutationVariant, mapVariant, plantEnergy, newPlantsPerDay, energyLostPerDay, genotypeSize, startingAnimalEnergy);
+//        return new SimulationParameters(startingAmountOfPlants, minReproduceEnergy, energyLostOnReproduction, minMutations, maxMutations, mutationVariant, mapVariant, plantEnergy, newPlantsPerDay, energyLostPerDay, genotypeSize, startingAnimalEnergy);
+        return new SimulationParametersBuilder()
+                .startingAmountOfPlants(startingAmountOfPlants)
+                .minReproduceEnergy(minReproduceEnergy)
+                .energyLostOnReproduction(energyLostOnReproduction)
+                .minMutations(minMutations)
+                .maxMutations(maxMutations)
+                .mutationVariant(mutationVariant)
+                .mapVariant(mapVariant)
+                .plantEnergy(plantEnergy)
+                .newPlantPerDay(newPlantsPerDay)
+                .energyLostPerDay(energyLostPerDay)
+                .genotypeSize(genotypeSize)
+                .startingAnimalEnergy(startingAnimalEnergy)
+                .build();
     }
     @FXML
     public void onSimulationStartClicked(){
