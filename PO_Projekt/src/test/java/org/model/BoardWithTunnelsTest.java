@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.model.BoardWithTunnels;
+import org.model.util.ConsoleMapDisplay;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -28,6 +30,9 @@ public class BoardWithTunnelsTest {
         tunnelsMaps.put(tunnelExit, tunnelEnter);
 
         map.setTunnelsMaps(tunnelsMaps);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay();
+        map.setObserver(observer);
 
         map.place(chomik);
 

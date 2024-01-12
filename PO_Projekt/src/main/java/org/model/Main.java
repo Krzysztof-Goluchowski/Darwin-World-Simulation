@@ -11,13 +11,27 @@ public class Main {
 //        ConsoleMapDisplay observer = new ConsoleMapDisplay();
 //        map.setObserver(observer);
 
-        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
-        Animal chomik = new Animal(simulationParameters);
-        Animal chomik1 = new Animal(simulationParameters);
+        SimulationParameters parameters = new SimulationParametersBuilder()
+                .startingAmountOfPlants(10)
+                .minReproduceEnergy(5)
+                .energyLostOnReproduction(5)
+                .minMutations(0)
+                .maxMutations(0)
+                .mutationVariant(SimulationParameters.MutationVariant.RANDOM)
+                .mapVariant(SimulationParameters.MapVariant.STANDARD)
+                .plantEnergy(2)
+                .newPlantPerDay(1)
+                .energyLostPerDay(5)
+                .genotypeSize(5)
+                .startingAnimalEnergy(10)
+                .build();
+
+        Animal chomik = new Animal(parameters);
+        Animal chomik1 = new Animal(parameters);
 
         chomik1.setEnergy(0);
 
-        Simulation simulation = new Simulation(simulationParameters, map, List.of(chomik, chomik1));
+        Simulation simulation = new Simulation(parameters, map, List.of(chomik, chomik1));
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
 
         engine.runAsync();
