@@ -2,12 +2,16 @@ package org.model.presenter;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.model.*;
 import org.model.util.ConsoleMapDisplay;
 
@@ -123,6 +127,23 @@ public class SimulationPresenter {
 
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
+
+        // Tworzymy nowe okno dla symulacji
+        Stage simulationStage = new Stage();
+        simulationStage.setTitle("Wyniki symulacji");
+
+        // Tworzymy VBox (lub inny rodzaj kontenera) dla zawartości nowego okna
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Wyniki symulacji będą tutaj."));
+
+        Scene simulationScene = new Scene(vbox, 300, 200);
+        simulationStage.setScene(simulationScene);
+
+        // Ustawiamy, że nowe okno jest modalne (blokuje interakcję z głównym oknem, dopóki nie zostanie zamknięte)
+        simulationStage.initModality(Modality.NONE);
+
+        // Pokazujemy nowe okno
+        simulationStage.show();
 
         engine.runAsync();
     }
