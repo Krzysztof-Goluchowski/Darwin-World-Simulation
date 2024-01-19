@@ -1,0 +1,8 @@
+.scroll-pane {
+    -fx-background: pink; /* Kolor tła */
+    -fx-padding: 20; /* Wewnętrzny odstęp */
+}
+
+.scroll-content {
+    -fx-alignment: center; /* Wyśrodkowanie zawartości */
+}

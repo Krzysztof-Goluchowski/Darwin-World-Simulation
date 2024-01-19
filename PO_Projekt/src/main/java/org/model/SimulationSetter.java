@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.ScrollPane;
-import java.awt.*;
 import java.io.IOException;
+import java.util.Objects;
 
 public class SimulationSetter extends Application {
 
@@ -20,8 +20,11 @@ public class SimulationSetter extends Application {
         ScrollPane scrollPane = new ScrollPane(viewRoot);
 
 
+        scrollPane.getStyleClass().add("scroll-pane");
 
         Scene scene = new Scene(scrollPane, 400, 500);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/styles.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Simulation app");
         primaryStage.show();
