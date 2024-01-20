@@ -14,13 +14,15 @@ import org.model.*;
 import org.model.util.ConsoleMapDisplay;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
+
+import java.awt.event.HierarchyBoundsAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class SimulationPresenter {
-    private Board worldMap;
+
     @FXML
     private TextField startingAmountOfPlantsLabel;
     @FXML
@@ -56,10 +58,75 @@ public class SimulationPresenter {
     @FXML
     private GridPane mapGrid;
 
+    private Board worldMap;
+
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
     }
 
+
+    @FXML
+    public void onSimulationStartClicked() throws IOException {
+        SimulationParameters simulationParameters = getParameters();
+
+        ArrayList<Animal> animalList = generateAnimals(simulationParameters);
+
+        Board map = configureMap(simulationParameters);
+
+        Simulation simulation = new Simulation(simulationParameters, map, animalList);
+        SimulationEngine engine = new SimulationEngine(List.of(simulation));
+
+        createSimulationStage(map);
+
+        engine.runAsync();
+    }
+
+    private Board configureMap(SimulationParameters simulationParameters) {
+        int mapHeight = Integer.parseInt(mapHeightLabel.getText());
+        int mapWidth = Integer.parseInt(mapWidthLabel.getText());
+        int numberOfTunnels = Integer.parseInt(numberOfTunnelsLabel.getText());
+
+        return createMap(simulationParameters.getMapVariant(), mapWidth, mapHeight, numberOfTunnels);
+    }
+
+    private Board createMap(SimulationParameters.MapVariant mapVariant, int mapWidth, int mapHeight, int numberOfTunnels) {
+        if (mapVariant == SimulationParameters.MapVariant.TUNNELS) {
+            return new BoardWithTunnels(mapWidth, mapHeight, numberOfTunnels);
+        } else {
+            return new Board(mapWidth, mapHeight);
+        }
+    }
+
+    private void createSimulationStage(Board map) throws IOException {
+        Stage simulationStage = new Stage();
+        simulationStage.setTitle("Running simulation");
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+        BorderPane viewRoot = loader.load();
+        Scene scene = new Scene(viewRoot);
+
+        SimulationPresenter presenter = loader.getController();
+        presenter.setWorldMap(map);
+
+        ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
+        map.setObserver(observer);
+
+        setSimulationStageSize(simulationStage);
+
+        simulationStage.setScene(scene);
+        simulationStage.show();
+        presenter.drawMap();
+    }
+
+    private void setSimulationStageSize(Stage simulationStage) {
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getBounds();
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+        simulationStage.setWidth(screenWidth);
+        simulationStage.setHeight(screenHeight);
+    }
     @FXML
     private SimulationParameters getParameters(){
         int startingAmountOfPlants = Integer.parseInt(startingAmountOfPlantsLabel.getText());
@@ -91,7 +158,6 @@ public class SimulationPresenter {
             mapVariant = SimulationParameters.MapVariant.TUNNELS;
         }
 
-//        return new SimulationParameters(startingAmountOfPlants, minReproduceEnergy, energyLostOnReproduction, minMutations, maxMutations, mutationVariant, mapVariant, plantEnergy, newPlantsPerDay, energyLostPerDay, genotypeSize, startingAnimalEnergy);
         return new SimulationParametersBuilder()
                 .startingAmountOfPlants(startingAmountOfPlants)
                 .minReproduceEnergy(minReproduceEnergy)
@@ -107,72 +173,20 @@ public class SimulationPresenter {
                 .startingAnimalEnergy(startingAnimalEnergy)
                 .build();
     }
-    @FXML
-    public void onSimulationStartClicked() throws IOException {
-        SimulationParameters simulationParameters = getParameters();
-
-        int mapHeight = Integer.parseInt(mapHeightLabel.getText());
-        int mapWidth = Integer.parseInt(mapWidthLabel.getText());
-        int numberOfTunnels = Integer.parseInt(numberOfTunnelsLabel.getText());
-
-        ArrayList<Animal> animalList = generateAnimals(simulationParameters);
-
-        Board map;
-        if (simulationParameters.getMapVariant() == SimulationParameters.MapVariant.TUNNELS){
-            map = new BoardWithTunnels(mapWidth, mapHeight, numberOfTunnels);
-        } else {
-            map = new Board(mapWidth, mapHeight);
-        }
-
-
-
-        Simulation simulation = new Simulation(simulationParameters, map, animalList);
-        SimulationEngine engine = new SimulationEngine(List.of(simulation));
-
-
-
-        Stage simulationStage = new Stage();
-        simulationStage.setTitle("Running simulation");
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane viewRoot = loader.load();
-        Scene scene = new Scene(viewRoot);
-
-        SimulationPresenter presenter = loader.getController();
-        presenter.setWorldMap(map);
-
-        ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
-        map.setObserver(observer);
-
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getBounds();
-        double screenWidth = bounds.getWidth();
-        double screenHeight = bounds.getHeight();
-        simulationStage.setWidth(screenWidth); // Na przykład, 80% szerokości ekranu
-        simulationStage.setHeight(screenHeight); // Na przykład, 60% wysokości ekranu
-
-
-        simulationStage.setScene(scene);
-        simulationStage.show();
-        presenter.drawMap();
-
-        engine.runAsync();
-    }
 
     public void drawMap() {
         clearGrid();
 
-        for (int i = 0; i < worldMap.getWidth() + 1; i++) {
+        for (int i = 0; i < worldMap.getWidth(); i++) {
             mapGrid.getColumnConstraints().add(new ColumnConstraints(30));
         }
 
-        for (int j = 0; j < worldMap.getHeight() + 1; j++) {
+        for (int j = 0; j < worldMap.getHeight(); j++) {
             mapGrid.getRowConstraints().add(new RowConstraints(30));
         }
 
-        for (int i = 0 ; i < worldMap.getWidth() + 1; i++) {
-            for (int j = 0; j < worldMap.getHeight() + 1; j++) {
+        for (int i = 0 ; i < worldMap.getWidth(); i++) {
+            for (int j = 0; j < worldMap.getHeight(); j++) {
                 Label label = new Label();
                 Vector2D position = new Vector2D(i, j);
                 if (worldMap.objectAt(position) == null){

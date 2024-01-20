@@ -22,7 +22,6 @@ public class Simulation {
                 generateNewPosition(animal);
             }
             worldMap.place(animal);
-            Thread.sleep(500);
         }
         //Tworze startowa liczbe roslin
         worldMap.generatePlants(parameters.getStartingAmountOfPlants());
@@ -34,7 +33,6 @@ public class Simulation {
             for (Animal animal : animalList) {
                 if(animal.getEnergy() <= 0){
                     deadAnimals.add(animal);
-                    Thread.sleep(500);
                 }
             }
 
@@ -43,7 +41,6 @@ public class Simulation {
             // Skręt i przemieszczenie każdego zwierzaka.
             for (Animal animal : animalList) {
                 worldMap.move(animal);
-                Thread.sleep(500);
             }
 
             // Konsumpcja roślin, na których pola weszły zwierzaki.
@@ -55,7 +52,6 @@ public class Simulation {
                     Plant plant = plantsMap.get(animalPosition);
                     animal.consumePlant(plant);
                     plantsMap.remove(animalPosition);
-                    Thread.sleep(500);
                 }
             }
 
@@ -71,6 +67,7 @@ public class Simulation {
                 animal.setEnergy(animal.getEnergy() - parameters.getEnergyLostPerDay());
                 animal.setDaysSurvived(animal.getDaysSurvived() + 1);
             }
+            Thread.sleep(500);
         }
     }
 
