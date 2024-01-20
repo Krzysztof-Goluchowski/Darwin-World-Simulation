@@ -6,9 +6,9 @@
 <?import javafx.collections.*?>
 
 <GridPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.model.presenter.SimulationPresenter"
-            alignment="CENTER">
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="org.model.presenter.SimulationPresenter"
+          alignment="CENTER">
 
     <columnConstraints>
         <ColumnConstraints />
@@ -30,7 +30,7 @@
         <RowConstraints minHeight="60" />
         <RowConstraints minHeight="60" />
         <RowConstraints minHeight="60" />
-        <RowConstraints minHeight="60" />
+        <RowConstraints minHeight="60"/>
     </rowConstraints>
 
     <Label text="Min Reproduce Energy: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
@@ -78,12 +78,12 @@
 
     <Label text="Mutation Variant: " GridPane.rowIndex="12" GridPane.columnIndex="0"/>
     <ComboBox fx:id="mutationVariantComboBox" GridPane.rowIndex="12" GridPane.columnIndex="1" value="RANDOM">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="RANDOM" />
-                    <String fx:value="SWAP" />
-                </FXCollections>
-            </items>
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="RANDOM" />
+                <String fx:value="SWAP" />
+            </FXCollections>
+        </items>
     </ComboBox>
 
     <Label text="Map Height: " GridPane.rowIndex="13" GridPane.columnIndex="0"/>
@@ -95,5 +95,5 @@
     <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
     <TextField fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" text="3"/>
 
-    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked"/>
+    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
 </GridPane>

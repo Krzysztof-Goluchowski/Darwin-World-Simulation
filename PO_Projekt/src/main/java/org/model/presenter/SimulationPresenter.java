@@ -1,20 +1,20 @@
 package org.model.presenter;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.model.*;
 import org.model.util.ConsoleMapDisplay;
-
+import javafx.stage.Screen;
+import javafx.geometry.Rectangle2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +53,8 @@ public class SimulationPresenter {
     private ComboBox<SimulationParameters.MutationVariant> mutationVariantComboBox;
     @FXML
     private ComboBox<SimulationParameters.MapVariant> mapVariantComboBox;
+    @FXML
+    private GridPane mapGrid;
 
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
@@ -106,7 +108,7 @@ public class SimulationPresenter {
                 .build();
     }
     @FXML
-    public void onSimulationStartClicked(){
+    public void onSimulationStartClicked() throws IOException {
         SimulationParameters simulationParameters = getParameters();
 
         int mapHeight = Integer.parseInt(mapHeightLabel.getText());
@@ -122,30 +124,73 @@ public class SimulationPresenter {
             map = new Board(mapWidth, mapHeight);
         }
 
-        ConsoleMapDisplay observer = new ConsoleMapDisplay();
-        map.setObserver(observer);
+
 
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
 
-        // Tworzymy nowe okno dla symulacji
+
+
         Stage simulationStage = new Stage();
-        simulationStage.setTitle("Wyniki symulacji");
+        simulationStage.setTitle("Running simulation");
 
-        // Tworzymy VBox (lub inny rodzaj kontenera) dla zawartości nowego okna
-        VBox vbox = new VBox();
-        vbox.getChildren().add(new Label("Wyniki symulacji będą tutaj."));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+        BorderPane viewRoot = loader.load();
+        Scene scene = new Scene(viewRoot);
 
-        Scene simulationScene = new Scene(vbox, 300, 200);
-        simulationStage.setScene(simulationScene);
+        SimulationPresenter presenter = loader.getController();
+        presenter.setWorldMap(map);
 
-        // Ustawiamy, że nowe okno jest modalne (blokuje interakcję z głównym oknem, dopóki nie zostanie zamknięte)
-        simulationStage.initModality(Modality.NONE);
+        ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
+        map.setObserver(observer);
 
-        // Pokazujemy nowe okno
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getBounds();
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+        simulationStage.setWidth(screenWidth); // Na przykład, 80% szerokości ekranu
+        simulationStage.setHeight(screenHeight); // Na przykład, 60% wysokości ekranu
+
+
+        simulationStage.setScene(scene);
         simulationStage.show();
+        presenter.drawMap();
 
         engine.runAsync();
+    }
+
+    public void drawMap() {
+        clearGrid();
+
+        for (int i = 0; i < worldMap.getWidth() + 1; i++) {
+            mapGrid.getColumnConstraints().add(new ColumnConstraints(30));
+        }
+
+        for (int j = 0; j < worldMap.getHeight() + 1; j++) {
+            mapGrid.getRowConstraints().add(new RowConstraints(30));
+        }
+
+        for (int i = 0 ; i < worldMap.getWidth() + 1; i++) {
+            for (int j = 0; j < worldMap.getHeight() + 1; j++) {
+                Label label = new Label();
+                Vector2D position = new Vector2D(i, j);
+                if (worldMap.objectAt(position) == null){
+                    label.setText(" ");
+                } else {
+                    label.setText(worldMap.objectAt(position).toString());
+                }
+
+                GridPane.setHalignment(label, HPos.CENTER);
+                mapGrid.add(label, i, j);
+            }
+        }
+    }
+
+    private void clearGrid() {
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
+        mapGrid.getColumnConstraints().clear();
+        mapGrid.getRowConstraints().clear();
     }
 
     private ArrayList<Animal> generateAnimals(SimulationParameters simulationParameters) {
