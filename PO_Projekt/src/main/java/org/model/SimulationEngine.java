@@ -14,7 +14,13 @@ public class SimulationEngine {
 
     public void runAsync() {
         for (Simulation simulation : simulationList){
-            Thread thread = new Thread(simulation::run);
+            Thread thread = new Thread(() -> {
+                try {
+                    simulation.run();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             thread.start();
             threadsList.add(thread);
         }
