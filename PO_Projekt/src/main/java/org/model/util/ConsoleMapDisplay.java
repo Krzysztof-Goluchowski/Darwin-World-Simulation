@@ -14,12 +14,20 @@ public class ConsoleMapDisplay {
         this.simulationPresenter = simulationPresenter;
     }
 
+    public ConsoleMapDisplay() {
+        this.simulationPresenter = null;
+    }
+
     public synchronized void mapChanged(Board worldMap, String message) {
         System.out.println("Update #" + (++updatesCounter) + ": "+ message);
         System.out.println(worldMap.toString());
 
-        Platform.runLater(() -> {
-            simulationPresenter.drawMap();
-        });
+        if (simulationPresenter != null){
+            Platform.runLater(() -> {
+                simulationPresenter.drawMap();
+            });
+        }
+
+
     }
 }
