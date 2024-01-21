@@ -12,6 +12,6 @@ public class Plant implements WorldElement {
     }
 
     public String toString() {
-        return "*";
+        return "\u26AB";
     }
 }
