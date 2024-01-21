@@ -188,10 +188,14 @@ public class SimulationPresenter {
         for (int i = 0 ; i < worldMap.getWidth(); i++) {
             for (int j = 0; j < worldMap.getHeight(); j++) {
                 Label label = new Label();
+                label.setStyle("-fx-text-fill: red; -fx-font-size: 30px;");
                 Vector2D position = new Vector2D(i, j);
                 if (worldMap.objectAt(position) == null){
                     label.setText(" ");
                 } else {
+                    if (worldMap.objectAt(position).toString() == "\u26AB"){
+                        label.setStyle("-fx-text-fill: green; -fx-font-size: 30px;");
+                    }
                     label.setText(worldMap.objectAt(position).toString());
                 }
 

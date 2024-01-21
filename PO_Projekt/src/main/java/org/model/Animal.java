@@ -222,16 +222,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public String toString() {
-        return switch (orientation) {
-            case NORTH -> "N";
-            case NORTH_EAST -> "NE";
-            case EAST -> "E";
-            case SOUTH_EAST -> "SE";
-            case SOUTH -> "S";
-            case SOUTH_WEST -> "SW";
-            case WEST -> "W";
-            case NORTH_WEST -> "NW";
-            default -> "NO DIRECTION";
-        };
+        return "\u25A0"; // To jest znak kwadratu w Unicode
     }
 }

@@ -73,6 +73,8 @@ public class Simulation {
 
     private void removeDeadAnimals(ArrayList<Animal> deadAnimals) {
         for (Animal animal : deadAnimals){
+            Map<Vector2D, Animal> animals = worldMap.getAnimals();
+            animals.remove(animal.getPosition());
             animalList.remove(animal);
         }
     }
