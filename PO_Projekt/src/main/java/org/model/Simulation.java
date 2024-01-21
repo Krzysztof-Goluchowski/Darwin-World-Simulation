@@ -23,6 +23,7 @@ public class Simulation {
             }
             worldMap.place(animal);
         }
+        worldMap.notifyObservers("Animals placed");
         //Tworze startowa liczbe roslin
         worldMap.generatePlants(parameters.getStartingAmountOfPlants());
 
@@ -67,7 +68,8 @@ public class Simulation {
                 animal.setEnergy(animal.getEnergy() - parameters.getEnergyLostPerDay());
                 animal.setDaysSurvived(animal.getDaysSurvived() + 1);
             }
-            Thread.sleep(500);
+            worldMap.notifyObservers("Animal moved");
+            Thread.sleep(200);
         }
     }
 

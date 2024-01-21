@@ -64,8 +64,9 @@ public class Board {
         Vector2D position = animal.getPosition();
         if (canMoveTo(position)) {
             animals.put(position, animal);
-            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
+//            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
         }
+
     }
 
     public void move(Animal animal) {
@@ -135,7 +136,7 @@ public class Board {
             animal.setOrientation(newPotentialOrientation);
             animals.put(animal.getPosition(), animal);
 
-            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
+//            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
         }
     }
 
