@@ -7,12 +7,21 @@ public class Simulation {
     private final SimulationParameters parameters;
     private Board worldMap;
     private List<Animal> animalList;
+    private boolean isPaused = false;
     private int simulationDay = 0;
 
     public Simulation(SimulationParameters parameters, Board worldMap, List<Animal> animalList) {
         this.parameters = parameters;
         this.worldMap = worldMap;
         this.animalList = new ArrayList<>(animalList);
+    }
+
+    public void pause() {
+        isPaused = true;
+    }
+
+    public void resume() {
+        isPaused = false;
     }
 
     public void run() throws InterruptedException {
@@ -70,6 +79,11 @@ public class Simulation {
             }
             worldMap.notifyObservers("Animal moved");
             Thread.sleep(200);
+
+            while (isPaused) {
+                Thread.sleep(100); // Poczekaj, jeśli symulacja jest w trybie pauzy
+            }
+
         }
     }
 

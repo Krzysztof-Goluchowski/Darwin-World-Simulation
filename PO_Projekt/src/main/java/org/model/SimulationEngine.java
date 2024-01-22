@@ -31,4 +31,16 @@ public class SimulationEngine {
         // Poczekaj, aż wszystkie zadania zostaną zakończone
         executorService.shutdown();
     }
+
+    public void pauseAllSimulations() {
+        for (Simulation simulation : simulationList) {
+            simulation.pause();
+        }
+    }
+
+    public void resumeAllSimulations() {
+        for (Simulation simulation : simulationList) {
+            simulation.resume();
+        }
+    }
 }
