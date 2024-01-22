@@ -57,14 +57,22 @@ public class SimulationPresenter {
     private ComboBox<SimulationParameters.MapVariant> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
-
+    private SimulationEngine engine;
     private Board worldMap;
 
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
     }
 
+    @FXML
+    public void onPauseClicked() {
+        engine.pauseAllSimulations();
+    }
 
+    @FXML
+    public void onResumeClicked() {
+        engine.resumeAllSimulations();
+    }
     @FXML
     public void onSimulationStartClicked() throws IOException {
         SimulationParameters simulationParameters = getParameters();
@@ -76,7 +84,7 @@ public class SimulationPresenter {
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
 
-        createSimulationStage(map);
+        createSimulationStage(map, engine);
 
         engine.runAsync();
     }
@@ -97,7 +105,7 @@ public class SimulationPresenter {
         }
     }
 
-    private void createSimulationStage(Board map) throws IOException {
+    private void createSimulationStage(Board map, SimulationEngine engine) throws IOException {
         Stage simulationStage = new Stage();
         simulationStage.setTitle("Running simulation");
 
@@ -109,6 +117,8 @@ public class SimulationPresenter {
         SimulationPresenter presenter = loader.getController();
         presenter.setWorldMap(map);
 
+        presenter.setEngine(engine);
+
         ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
         map.setObserver(observer);
 
@@ -117,6 +127,10 @@ public class SimulationPresenter {
         simulationStage.setScene(scene);
         simulationStage.show();
         presenter.drawMap();
+    }
+
+    public void setEngine(SimulationEngine engine) {
+        this.engine = engine;
     }
 
     private void setSimulationStageSize(Stage simulationStage) {
@@ -219,4 +233,6 @@ public class SimulationPresenter {
         }
         return animalList;
     }
+
+
 }
