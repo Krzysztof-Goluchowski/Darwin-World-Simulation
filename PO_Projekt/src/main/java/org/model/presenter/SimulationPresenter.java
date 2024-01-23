@@ -1,27 +1,27 @@
 package org.model.presenter;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.model.*;
 import org.model.util.ConsoleMapDisplay;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-
-import java.awt.event.HierarchyBoundsAdapter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.net.URL;
+import java.util.*;
 
-public class SimulationPresenter {
+public class SimulationPresenter implements Initializable {
 
     @FXML
     private TextField startingAmountOfPlantsLabel;
@@ -57,11 +57,94 @@ public class SimulationPresenter {
     private ComboBox<SimulationParameters.MapVariant> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
+
+    @FXML
+    private ListView<String> defaultConfigurationsListView;
+
     private SimulationEngine engine;
     private Board worldMap;
 
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
+    }
+
+    private String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
+    private String selectedOption;
+
+    private HashMap<String, String[]> settings = new HashMap<>();
+
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (defaultConfigurationsListView != null) {
+
+            defaultConfigurationsListView.getItems().addAll(defaultSettings);
+
+            settings.put("Easy", new String[]{"5", "5", "0", "2", "15", "5", "3", "1", "5", "15", "3", "25", "40", "0"});
+            settings.put("Hard", new String[]{"10", "10", "2", "5", "5", "1", "2", "2", "10", "10", "5", "30", "30", "0"});
+            settings.put("Endless Simulation", new String[]{"5", "5", "2", "3", "20", "10", "4", "0", "7", "15", "4", "30", "50", "0"});
+            defaultConfigurationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    selectedOption = defaultConfigurationsListView.getSelectionModel().getSelectedItem();
+
+                    String[] parameters = settings.get(selectedOption);
+
+                    minReproduceEnergyLabel.setText(parameters[0]);
+                    energyLostOnReproductionLabel.setText(parameters[1]);
+                    minMutationsLabel.setText(parameters[2]);
+                    maxMutationsLabel.setText(parameters[3]);
+                    startingAmountOfPlantsLabel.setText(parameters[4]);
+                    newPlantPerDayLabel.setText(parameters[5]);
+                    plantEnergyLabel.setText(parameters[6]);
+                    energyLostPerDayLabel.setText(parameters[7]);
+                    genotypeSizeLabel.setText(parameters[8]);
+                    startingAnimalEnergyLabel.setText(parameters[9]);
+                    animalsAmountOnStartLabel.setText(parameters[10]);
+                    mapHeightLabel.setText(parameters[11]);
+                    mapWidthLabel.setText(parameters[12]);
+                    numberOfTunnelsLabel.setText(parameters[13]);
+
+                }
+            });
+        }
+    }
+
+    @FXML
+    public void onSaveConfiguration(){
+        String[] savedSettings = {
+                minReproduceEnergyLabel.getText(),
+                energyLostOnReproductionLabel.getText(),
+                minMutationsLabel.getText(),
+                maxMutationsLabel.getText(),
+                startingAmountOfPlantsLabel.getText(),
+                newPlantPerDayLabel.getText(),
+                plantEnergyLabel.getText(),
+                energyLostPerDayLabel.getText(),
+                genotypeSizeLabel.getText(),
+                startingAnimalEnergyLabel.getText(),
+                animalsAmountOnStartLabel.getText(),
+                mapHeightLabel.getText(),
+                mapWidthLabel.getText(),
+                numberOfTunnelsLabel.getText()
+                };
+
+
+
+
+        defaultConfigurationsListView.getItems().add("New Settings " + (settings.size() - 2));
+        settings.put("New Settings " + (settings.size() - 2), savedSettings);
+
+    }
+
+    @FXML
+    public void onDeleteConfiguration(){
+        String selectedConfig = defaultConfigurationsListView.getSelectionModel().getSelectedItem();
+        if (selectedConfig != null) {
+            defaultConfigurationsListView.getItems().remove(selectedConfig);
+            settings.remove(selectedConfig);
+        }
     }
 
     @FXML
