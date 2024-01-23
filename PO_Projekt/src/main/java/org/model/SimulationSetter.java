@@ -18,11 +18,9 @@ public class SimulationSetter extends Application {
         GridPane viewRoot = loader.load();
 
         ScrollPane scrollPane = new ScrollPane(viewRoot);
-
-
         scrollPane.getStyleClass().add("scroll-pane");
 
-        Scene scene = new Scene(scrollPane, 400, 500);
+        Scene scene = new Scene(scrollPane, 565, 1000);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("css/styles.css").toExternalForm());
 
         primaryStage.setScene(scene);

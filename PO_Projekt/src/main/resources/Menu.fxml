@@ -13,6 +13,7 @@
     <columnConstraints>
         <ColumnConstraints />
         <ColumnConstraints />
+        <ColumnConstraints />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="60" />
@@ -95,5 +96,21 @@
     <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
     <TextField fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" text="3"/>
 
-    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="3" GridPane.halignment="CENTER" />
+
+
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="2" spacing="20" GridPane.rowSpan="16" style="-fx-padding: 20 20 20 20;">
+
+        <Label text="Saved Configurations" alignment="CENTER" />
+
+        <!-- Lista z domyślnymi ustawieniami -->
+        <ListView fx:id="defaultConfigurationsListView" prefWidth="150" prefHeight="800"/>
+
+        <!-- Przycisk do załadowania wybranego domyślnego ustawienia -->
+
+        <Button text="Save Configuration" prefWidth="150" onAction="#onSaveConfiguration" />
+        <Button text="Delete Configuration" prefWidth="150" onAction="#onDeleteConfiguration" />
+
+    </VBox>
+
 </GridPane>
