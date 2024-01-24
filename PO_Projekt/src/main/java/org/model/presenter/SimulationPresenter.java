@@ -1,23 +1,21 @@
 package org.model.presenter;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.model.*;
 import org.model.util.ConsoleMapDisplay;
-import javafx.stage.Screen;
-import javafx.geometry.Rectangle2D;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,7 +25,6 @@ import java.util.*;
 
 
 public class SimulationPresenter implements Initializable, SimulationObserver {
-
     @FXML
     private Spinner startingAmountOfPlantsLabel;
     @FXML
@@ -115,45 +112,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         if (defaultConfigurationsListView != null) {
 
             defaultConfigurationsListView.getItems().addAll(defaultSettings);
-
-            settings.put("Easy", new int[]{5, 5, 0, 2, 15, 5, 3, 1, 5, 15, 3, 0, 0, 25, 40, 0});
-            settings.put("Hard", new int[]{10, 10, 2, 5, 5, 1, 2, 2, 10, 10, 5, 0, 0, 30, 30, 0});
-            settings.put("Endless Simulation", new int[]{5, 5, 2, 3, 20, 10, 4, 0, 7, 15, 4, 0, 0, 30, 50, 0});
-            defaultConfigurationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    selectedOption = defaultConfigurationsListView.getSelectionModel().getSelectedItem();
-
-                    int[] parameters = settings.get(selectedOption);
-
-                    minReproduceEnergyLabel.getValueFactory().setValue(parameters[0]);
-                    energyLostOnReproductionLabel.getValueFactory().setValue(parameters[1]);
-                    minMutationsLabel.getValueFactory().setValue(parameters[2]);
-                    maxMutationsLabel.getValueFactory().setValue(parameters[3]);
-                    startingAmountOfPlantsLabel.getValueFactory().setValue(parameters[4]);
-                    newPlantPerDayLabel.getValueFactory().setValue(parameters[5]);
-                    plantEnergyLabel.getValueFactory().setValue(parameters[6]);
-                    energyLostPerDayLabel.getValueFactory().setValue(parameters[7]);
-                    genotypeSizeLabel.getValueFactory().setValue(parameters[8]);
-                    startingAnimalEnergyLabel.getValueFactory().setValue(parameters[9]);
-                    animalsAmountOnStartLabel.getValueFactory().setValue(parameters[10]);
-
-                    if (parameters[11] == 0){
-                        mapVariantComboBox.setValue("STANDARD");
-                    } else {
-                        mapVariantComboBox.setValue("TUNNELS");
-                    }
-
-                    if (parameters[12] == 0){
-                        mutationVariantComboBox.setValue("RANDOM");
-                    } else {
-                        mutationVariantComboBox.setValue("SWAP");
-                    }
-
-                    mapHeightLabel.getValueFactory().setValue(parameters[13]);
-                    mapWidthLabel.getValueFactory().setValue(parameters[14]);
-                    numberOfTunnelsLabel.getValueFactory().setValue(parameters[15]);
-                }
             });
         }
     }
@@ -214,14 +172,20 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML
     public void onPauseClicked() {
         engine.pauseAllSimulations();
+        this.isPaused = true;
+        drawMap();
     }
 
     @FXML
     public void onResumeClicked() {
+        this.isPaused = false;
         engine.resumeAllSimulations();
     }
     @FXML
     public void onSimulationStartClicked() throws IOException {
+
+        this.referenceEnergy = Integer.parseInt(startingAnimalEnergyLabel.getText());
+
         SimulationParameters simulationParameters = getParameters();
 
         ArrayList<Animal> animalList = generateAnimals(simulationParameters);
@@ -267,6 +231,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         SimulationPresenter presenter = loader.getController();
         this.presenter = presenter;
         presenter.setWorldMap(map);
+        presenter.referenceEnergy = Integer.parseInt(startingAmountOfPlantsLabel.getText());
+        presenter.saveToCSV = createCSVCheckBox.isSelected();
+
+        if(presenter.saveToCSV){
+            try {
+                FileWriter fileWriter = new FileWriter("simulation_stats.csv", true);
+                csvWriter = new PrintWriter(fileWriter);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         presenter.setSimulationParameters(simulationParameters);
 
@@ -340,7 +315,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                 .build();
     }
 
-    public void drawMap() {
+    public synchronized void drawMap() {
         clearGrid();
 
         for (int i = 0; i < worldMap.getWidth(); i++) {
@@ -353,16 +328,34 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
         for (int i = 0; i < worldMap.getWidth(); i++) {
             for (int j = 0; j < worldMap.getHeight(); j++) {
-                StackPane cell = new StackPane(); // Używamy StackPane, aby umożliwić wyświetlenie kształtów
+                StackPane cell = new StackPane();
+
+                if (this.isPaused){
+                    int middleOfBoard = worldMap.getHeight() / 2;
+                    int radiusOfEquator = (int) (0.1 * worldMap.getHeight());
+                    int bottomLimitOfEquator = middleOfBoard - radiusOfEquator;
+                    int upperLimitOfEquator = middleOfBoard + radiusOfEquator;
+
+                    // Wyróżnianie obszaru równikowego
+                    if (j >= bottomLimitOfEquator && j <= upperLimitOfEquator) {
+                        cell.setStyle("-fx-background-color: lightblue;"); // Kolor tła dla równika
+                    }
+                }
+
                 Object mapObject = worldMap.objectAt(new Vector2D(i, j));
 
-                if (mapObject instanceof Animal) {
-                    Animal animal = (Animal) mapObject;
+                if (mapObject instanceof Animal animal) {
                     Rectangle animalShape = new Rectangle(30, 30);
-                    animalShape.setFill(Color.web(mapEnergyToColor(animal.getEnergy(), 10)));
+                    animalShape.setFill(Color.web(mapEnergyToColor(animal.getEnergy(), this.referenceEnergy)));
                     cell.getChildren().add(animalShape);
+
+                    if (animal.hasMostPopularGenotype()) { // wyrozniam te z najpopularniejszym genotypem
+                        Circle highlightCircle = new Circle(10);
+                        highlightCircle.setFill(Color.PURPLE);
+                        cell.getChildren().add(highlightCircle);
+                    }
                 } else if (mapObject instanceof Plant) {
-                    Circle plantShape = new Circle(15); // Promień połowy szerokości komórki
+                    Circle plantShape = new Circle(15);
                     plantShape.setFill(Color.GREEN);
                     cell.getChildren().add(plantShape);
                 }
@@ -387,20 +380,20 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         double energyRatio = (double) energy / referenceEnergy;
 
         if (energyRatio > 0.8) {
-            return "green"; // Najwyższy poziom energii
+            return "green";
         } else if (energyRatio > 0.6) {
-            return "limegreen"; // Wysoki poziom energii
+            return "limegreen";
         } else if (energyRatio > 0.4) {
-            return "yellow"; // Średni poziom energii
+            return "yellow";
         } else if (energyRatio > 0.2) {
-            return "orange"; // Niski poziom energii
+            return "orange";
         } else {
-            return "red"; // Bardzo niski poziom energii
+            return "red";
         }
     }
 
-    private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0)); // hack to retain visible grid lines
+    private synchronized void clearGrid() {
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
         mapGrid.getColumnConstraints().clear();
         mapGrid.getRowConstraints().clear();
     }
@@ -416,7 +409,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
     @Override
     public void update(int animalsCount, int plantsCount, double averageEnergy,
-                       double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren, boolean isEnd) {
+                       double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren, boolean isEnd, List<Integer> mostPopularGenotype) {
         Platform.runLater(() -> {
             presenter.simulationDayLabel.setText("Dzien symulacji: " + simulationDay);
             presenter.animalCountLabel.setText("Liczba zwierzat: " + animalsCount);
@@ -424,15 +417,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
             presenter.averageEnergyLabel.setText("Srednia energia: " + averageEnergy);
             presenter.averageLifespanLabel.setText("Srednia dlugosc zycia: " + averageLifespan);
             presenter.freeSpotsLabel.setText("Liczba wolnych pol: " + amountOfFreeSpots);
-            presenter.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: ");
+            presenter.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: " + mostPopularGenotype);
             presenter.averageNumberOfChildrenLabel.setText("Srednia liczba dzieci: " + averageNumberOfChildren);
 
-            csvWriter.println(simulationDay + "," + animalsCount + "," + plantsCount + "," +
-                    averageEnergy + "," + averageLifespan + "," +
-                    amountOfFreeSpots + "," + averageNumberOfChildren);
-            csvWriter.flush();
-
-            if (isEnd) closeCSVWriter();
+            if (presenter.saveToCSV)
+            {
+                csvWriter.println(simulationDay + "," + animalsCount + "," + plantsCount + "," +
+                        averageEnergy + "," + averageLifespan + "," +
+                        amountOfFreeSpots + "," + averageNumberOfChildren + "," + mostPopularGenotype);
+                csvWriter.flush();
+            }
+            if (isEnd && presenter.saveToCSV) closeCSVWriter();
         });
     }
 

@@ -12,7 +12,7 @@
             fx:controller="org.model.presenter.SimulationPresenter">
 
     <left>
-        <VBox spacing="20" alignment="CENTER_LEFT" prefWidth="200" style="-fx-padding: 20 20 20 20;">
+        <VBox spacing="20" alignment="CENTER_LEFT" prefWidth="300" style="-fx-padding: 20 20 20 20;">
             <Label fx:id="simulationDayLabel" text="Dzień symulacji:"/>
             <Label fx:id="animalCountLabel" text="Liczba zwierząt:"/>
             <Label fx:id="plantCountLabel" text="Liczba roślin:"/>
