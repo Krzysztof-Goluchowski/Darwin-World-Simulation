@@ -13,9 +13,15 @@
 
     <left>
         <VBox spacing="20" alignment="CENTER_LEFT" prefWidth="200" style="-fx-padding: 20 20 20 20;">
-            <Label text="Statystyka trawy: 100"/>
-            <Label text="Statystyka kwiatów: 50"/>
-            <Label text="Inne statystyki..."/>
+            <Label fx:id="simulationDayLabel" text="Dzień symulacji:"/>
+            <Label fx:id="animalCountLabel" text="Liczba zwierząt:"/>
+            <Label fx:id="plantCountLabel" text="Liczba roślin:"/>
+            <Label fx:id="averageEnergyLabel" text="Średnia energia:"/>
+            <Label fx:id="averageLifespanLabel" text="Średnia długość życia:"/>
+            <Label fx:id="freeSpotsLabel" text="Liczba wolnych miejsc:"/>
+            <Label fx:id="mostPopularGenotypeLabel" text="Najpopularniejszy genotyp:"/>
+            <Label fx:id="averageNumberOfChildrenLabel" text="Średnia liczba dzieci:"/>
+
             <HBox spacing="50" alignment="CENTER">
                 <Button text="Pause" onAction="#onPauseClicked"/>
                 <Button text="Resume" onAction="#onResumeClicked"/>

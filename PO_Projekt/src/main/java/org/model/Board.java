@@ -64,9 +64,17 @@ public class Board {
         Vector2D position = animal.getPosition();
         if (canMoveTo(position)) {
             animals.put(position, animal);
-//            notifyObservers("Animal placed on (" + position.getX() + ", " + position.getY() + ")");
+        }
+    }
+
+    public int getAmountOfFreeSpots() {
+        Set<Vector2D> occupiedPositions = new HashSet<>();
+        for (Vector2D position : animals.keySet()) {
+            occupiedPositions.add(position);
         }
 
+        int totalFields = width * height;
+        return totalFields - occupiedPositions.size();
     }
 
     public void move(Animal animal) {

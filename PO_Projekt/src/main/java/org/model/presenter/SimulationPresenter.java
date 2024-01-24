@@ -1,5 +1,6 @@
 package org.model.presenter;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -7,21 +8,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.model.*;
 import org.model.util.ConsoleMapDisplay;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
+
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
 
-public class SimulationPresenter implements Initializable {
+public class SimulationPresenter implements Initializable, SimulationObserver {
 
     @FXML
     private TextField startingAmountOfPlantsLabel;
@@ -57,23 +61,46 @@ public class SimulationPresenter implements Initializable {
     private ComboBox<SimulationParameters.MapVariant> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
-
+    @FXML
+    private Label animalCountLabel;
+    @FXML
+    private Label plantCountLabel;
+    @FXML
+    private Label averageEnergyLabel;
+    @FXML
+    private Label averageLifespanLabel;
+    @FXML
+    private Label freeSpotsLabel;
+    @FXML
+    private Label mostPopularGenotypeLabel;
+    @FXML
+    public Label averageNumberOfChildrenLabel;
+    @FXML
+    public Label simulationDayLabel;
     @FXML
     private ListView<String> defaultConfigurationsListView;
-
+    @FXML
+    private CheckBox createCSVCheckBox;
     private SimulationEngine engine;
     private Board worldMap;
-
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
     }
-
     private String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
     private String selectedOption;
-
     private HashMap<String, String[]> settings = new HashMap<>();
+    private SimulationPresenter presenter;
+    private PrintWriter csvWriter;
 
-
+    public SimulationPresenter() {
+        try {
+            // Utworzenie i otwarcie pliku do zapisu
+            FileWriter fileWriter = new FileWriter("simulation_stats.csv", true); // Ustaw true dla zachowania danych przy każdym uruchomieniu
+            csvWriter = new PrintWriter(fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -128,10 +155,7 @@ public class SimulationPresenter implements Initializable {
                 mapHeightLabel.getText(),
                 mapWidthLabel.getText(),
                 numberOfTunnelsLabel.getText()
-                };
-
-
-
+        };
 
         defaultConfigurationsListView.getItems().add("New Settings " + (settings.size() - 2));
         settings.put("New Settings " + (settings.size() - 2), savedSettings);
@@ -165,6 +189,7 @@ public class SimulationPresenter implements Initializable {
         Board map = configureMap(simulationParameters);
 
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
+        simulation.addObserver(this);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
 
         createSimulationStage(map, engine);
@@ -198,6 +223,7 @@ public class SimulationPresenter implements Initializable {
         Scene scene = new Scene(viewRoot);
 
         SimulationPresenter presenter = loader.getController();
+        this.presenter = presenter;
         presenter.setWorldMap(map);
 
         presenter.setEngine(engine);
@@ -236,7 +262,6 @@ public class SimulationPresenter implements Initializable {
         int genotypeSize = Integer.parseInt(genotypeSizeLabel.getText());
         int plantEnergy = Integer.parseInt(plantEnergyLabel.getText());
         int startingAnimalEnergy = Integer.parseInt(startingAnimalEnergyLabel.getText());
-
 
         String mutationVariantString = String.valueOf(mutationVariantComboBox.getValue());
         String mapVariantString = String.valueOf(mapVariantComboBox.getValue());
@@ -282,23 +307,41 @@ public class SimulationPresenter implements Initializable {
             mapGrid.getRowConstraints().add(new RowConstraints(30));
         }
 
-        for (int i = 0 ; i < worldMap.getWidth(); i++) {
+        for (int i = 0; i < worldMap.getWidth(); i++) {
             for (int j = 0; j < worldMap.getHeight(); j++) {
-                Label label = new Label();
-                label.setStyle("-fx-text-fill: red; -fx-font-size: 30px;");
-                Vector2D position = new Vector2D(i, j);
-                if (worldMap.objectAt(position) == null){
-                    label.setText(" ");
-                } else {
-                    if (worldMap.objectAt(position).toString() == "\u26AB"){
-                        label.setStyle("-fx-text-fill: green; -fx-font-size: 30px;");
-                    }
-                    label.setText(worldMap.objectAt(position).toString());
+                StackPane cell = new StackPane(); // Używamy StackPane, aby umożliwić wyświetlenie kształtów
+                Object mapObject = worldMap.objectAt(new Vector2D(i, j));
+
+                if (mapObject instanceof Animal) {
+                    Animal animal = (Animal) mapObject;
+                    Rectangle animalShape = new Rectangle(30, 30);
+                    animalShape.setFill(Color.web(mapEnergyToColor(animal.getEnergy(), 10)));
+                    cell.getChildren().add(animalShape);
+                } else if (mapObject instanceof Plant) {
+                    Circle plantShape = new Circle(15); // Promień połowy szerokości komórki
+                    plantShape.setFill(Color.GREEN);
+                    cell.getChildren().add(plantShape);
                 }
 
-                GridPane.setHalignment(label, HPos.CENTER);
-                mapGrid.add(label, i, j);
+                GridPane.setHalignment(cell, HPos.CENTER);
+                mapGrid.add(cell, i, j);
             }
+        }
+    }
+
+    private String mapEnergyToColor(int energy, int referenceEnergy) {
+        double energyRatio = (double) energy / referenceEnergy;
+
+        if (energyRatio > 0.8) {
+            return "green"; // Najwyższy poziom energii
+        } else if (energyRatio > 0.6) {
+            return "limegreen"; // Wysoki poziom energii
+        } else if (energyRatio > 0.4) {
+            return "yellow"; // Średni poziom energii
+        } else if (energyRatio > 0.2) {
+            return "orange"; // Niski poziom energii
+        } else {
+            return "red"; // Bardzo niski poziom energii
         }
     }
 
@@ -317,5 +360,31 @@ public class SimulationPresenter implements Initializable {
         return animalList;
     }
 
+    @Override
+    public void update(int animalsCount, int plantsCount, double averageEnergy,
+                       double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren, boolean isEnd) {
+        Platform.runLater(() -> {
+            presenter.simulationDayLabel.setText("Dzien symulacji: " + simulationDay);
+            presenter.animalCountLabel.setText("Liczba zwierzat: " + animalsCount);
+            presenter.plantCountLabel.setText("Liczba roslin: " + plantsCount);
+            presenter.averageEnergyLabel.setText("Srednia energia: " + averageEnergy);
+            presenter.averageLifespanLabel.setText("Srednia dlugosc zycia: " + averageLifespan);
+            presenter.freeSpotsLabel.setText("Liczba wolnych pol: " + amountOfFreeSpots);
+            presenter.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: ");
+            presenter.averageNumberOfChildrenLabel.setText("Srednia liczba dzieci: " + averageNumberOfChildren);
 
+            csvWriter.println(simulationDay + "," + animalsCount + "," + plantsCount + "," +
+                    averageEnergy + "," + averageLifespan + "," +
+                    amountOfFreeSpots + "," + averageNumberOfChildren);
+            csvWriter.flush();
+
+            if (isEnd) closeCSVWriter();
+        });
+    }
+
+    public void closeCSVWriter() {
+        if (csvWriter != null) {
+            csvWriter.close();
+        }
+    }
 }

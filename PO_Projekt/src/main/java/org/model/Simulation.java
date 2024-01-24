@@ -2,13 +2,63 @@ package org.model;
 
 import java.util.*;
 
-//Analogiczna klasa do tej z labow
 public class Simulation {
     private final SimulationParameters parameters;
     private Board worldMap;
     private List<Animal> animalList;
     private boolean isPaused = false;
-    private int simulationDay = 0;
+    private final List<SimulationObserver> observers = new ArrayList<>();
+    private int simulationDay;
+    public void addObserver(SimulationObserver observer) {
+        observers.add(observer);
+    }
+
+    protected void notifyObservers() {
+        boolean isEnd = false;
+        if (animalList.isEmpty()){
+            isEnd = true;
+        }
+        for (SimulationObserver observer : observers) {
+            observer.update(animalList.size(), worldMap.getPlants().size(), calculateAverageEnergy(),
+                    calculateAverageLifeSpan(), worldMap.getAmountOfFreeSpots(), simulationDay,
+                    calculateAverageChildren(), isEnd);
+        }
+    }
+
+    public double calculateAverageChildren() {
+        if (animalList.isEmpty()) {
+            return 0;
+        }
+        int totalChildren = 0;
+        for (Animal animal : animalList) {
+            totalChildren += animal.getAmountOfChildren();
+        }
+        return (double) totalChildren / animalList.size();
+    }
+
+    public double calculateAverageEnergy() {
+        if (animalList.isEmpty()) {
+            return 0;
+        }
+        double totalEnergy = 0;
+        for (Animal animal : animalList) {
+            totalEnergy += animal.getEnergy();
+        }
+        return totalEnergy / animalList.size();
+    }
+    private List<Animal> allDeadAnimals = new ArrayList<>(); // Lista przechowująca wszystkie martwe zwierzęta
+
+    public double calculateAverageLifeSpan() {
+        if (allDeadAnimals.isEmpty()) {
+            return 0;
+        }
+        int totalLifeSpan = 0;
+        for (Animal animal : allDeadAnimals) {
+            totalLifeSpan += animal.getDaysSurvived();
+        }
+        return (double) totalLifeSpan / allDeadAnimals.size();
+    }
+
 
     public Simulation(SimulationParameters parameters, Board worldMap, List<Animal> animalList) {
         this.parameters = parameters;
@@ -43,6 +93,7 @@ public class Simulation {
             for (Animal animal : animalList) {
                 if(animal.getEnergy() <= 0){
                     deadAnimals.add(animal);
+                    allDeadAnimals.add(animal);
                 }
             }
 
@@ -59,8 +110,7 @@ public class Simulation {
             for (Animal animal : animalList) {
                 if (plantsMap.containsKey(animal.getPosition())) {
                     Vector2D animalPosition = animal.getPosition();
-                    Plant plant = plantsMap.get(animalPosition);
-                    animal.consumePlant(plant);
+                    animal.consumePlant();
                     plantsMap.remove(animalPosition);
                 }
             }
@@ -72,7 +122,6 @@ public class Simulation {
             worldMap.generatePlants(parameters.getNewPlantPerDay());
 
             //Koniec dnia symulacji, odejmujemy energie zuzyta na ruch i zwiekszamy ilosc przzytych dni przez zwierze
-            simulationDay += 1;
             for (Animal animal : animalList) {
                 animal.setEnergy(animal.getEnergy() - parameters.getEnergyLostPerDay());
                 animal.setDaysSurvived(animal.getDaysSurvived() + 1);
@@ -80,10 +129,12 @@ public class Simulation {
             worldMap.notifyObservers("Animal moved");
             Thread.sleep(200);
 
+            simulationDay++;
+            notifyObservers();
+
             while (isPaused) {
                 Thread.sleep(100); // Poczekaj, jeśli symulacja jest w trybie pauzy
             }
-
         }
     }
 

@@ -96,6 +96,9 @@
     <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
     <TextField fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" text="3"/>
 
+    <Label text="Create CSV File:" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="createCSVCheckBox" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
+
     <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="3" GridPane.halignment="CENTER" />
 
 
