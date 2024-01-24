@@ -71,8 +71,8 @@
     <ComboBox fx:id="mapVariantComboBox" GridPane.rowIndex="11" GridPane.columnIndex="1" value="STANDARD">
         <items>
             <FXCollections fx:factory="observableArrayList">
-                <String fx:value="STANDARD" />
-                <String fx:value="TUNNELS" />
+                <String fx:value="STANDARD" fx:id="STANDARD" />
+                <String fx:value="TUNNELS" fx:id="TUNNELS" />
             </FXCollections>
         </items>
     </ComboBox>
