@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -21,7 +18,10 @@ import org.model.*;
 import org.model.util.ConsoleMapDisplay;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
+
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
 
@@ -79,6 +79,8 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     public Label simulationDayLabel;
     @FXML
     private ListView<String> defaultConfigurationsListView;
+    @FXML
+    private CheckBox createCSVCheckBox;
     private SimulationEngine engine;
     private Board worldMap;
     public void setWorldMap(Board worldMap) {
@@ -88,7 +90,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private String selectedOption;
     private HashMap<String, String[]> settings = new HashMap<>();
     private SimulationPresenter presenter;
-    private int referenceEnergy;
+    private PrintWriter csvWriter;
+
+    public SimulationPresenter() {
+        try {
+            // Utworzenie i otwarcie pliku do zapisu
+            FileWriter fileWriter = new FileWriter("simulation_stats.csv", true); // Ustaw true dla zachowania danych przy każdym uruchomieniu
+            csvWriter = new PrintWriter(fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -171,7 +183,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML
     public void onSimulationStartClicked() throws IOException {
         SimulationParameters simulationParameters = getParameters();
-        this.referenceEnergy = getParameters().getStartingAnimalEnergy();
 
         ArrayList<Animal> animalList = generateAnimals(simulationParameters);
 
@@ -320,7 +331,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
     private String mapEnergyToColor(int energy, int referenceEnergy) {
         double energyRatio = (double) energy / referenceEnergy;
-        System.out.println(referenceEnergy);
 
         if (energyRatio > 0.8) {
             return "green"; // Najwyższy poziom energii
@@ -352,7 +362,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
     @Override
     public void update(int animalsCount, int plantsCount, double averageEnergy,
-                                    double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren) {
+                       double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren, boolean isEnd) {
         Platform.runLater(() -> {
             presenter.simulationDayLabel.setText("Dzien symulacji: " + simulationDay);
             presenter.animalCountLabel.setText("Liczba zwierzat: " + animalsCount);
@@ -362,6 +372,19 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
             presenter.freeSpotsLabel.setText("Liczba wolnych pol: " + amountOfFreeSpots);
             presenter.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: ");
             presenter.averageNumberOfChildrenLabel.setText("Srednia liczba dzieci: " + averageNumberOfChildren);
+
+            csvWriter.println(simulationDay + "," + animalsCount + "," + plantsCount + "," +
+                    averageEnergy + "," + averageLifespan + "," +
+                    amountOfFreeSpots + "," + averageNumberOfChildren);
+            csvWriter.flush();
+
+            if (isEnd) closeCSVWriter();
         });
+    }
+
+    public void closeCSVWriter() {
+        if (csvWriter != null) {
+            csvWriter.close();
+        }
     }
 }

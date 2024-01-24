@@ -11,7 +11,7 @@ public class MapDirectionTest {
     @Test
     public void testNewDirection(){
         Vector2D positionOfZwierzak = new Vector2D(10, 10);
-        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10, false);
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
 
@@ -49,7 +49,7 @@ public class MapDirectionTest {
     @Test
     public void testGetOrientationNumber(){
         Vector2D positionOfZwierzak = new Vector2D(10, 10);
-        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10);
+        SimulationParameters simulationParameters = new SimulationParameters(10, 5, 5, 0, 0, SimulationParameters.MutationVariant.RANDOM, SimulationParameters.MapVariant.STANDARD, 2, 1, 5, 5, 10, false);
         List<Integer> genotype = new LinkedList<>();
         genotype.add(0);
 

@@ -14,10 +14,14 @@ public class Simulation {
     }
 
     protected void notifyObservers() {
+        boolean isEnd = false;
+        if (animalList.isEmpty()){
+            isEnd = true;
+        }
         for (SimulationObserver observer : observers) {
             observer.update(animalList.size(), worldMap.getPlants().size(), calculateAverageEnergy(),
                     calculateAverageLifeSpan(), worldMap.getAmountOfFreeSpots(), simulationDay,
-                    calculateAverageChildren());
+                    calculateAverageChildren(), isEnd);
         }
     }
 
