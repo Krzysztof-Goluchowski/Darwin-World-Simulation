@@ -12,13 +12,16 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private Vector2D position;
     private MapDirection orientation;
     private final List<Integer> genotype;
+    private final List<Integer> generalGenotype;
     private final SimulationParameters params;
+    private boolean hasMostPopularGenotype;
 
     //Adam i Ewa
     public Animal(SimulationParameters parameters){
         this.params = parameters;
         this.energy = parameters.getStartingAnimalEnergy();
         this.genotype = generateNewGenotype();
+        this.generalGenotype = new LinkedList<>(genotype);
         this.orientation = MapDirection.NORTH;
     }
 
@@ -26,6 +29,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.position = position;
         this.energy = energy;
         this.genotype = genotype;
+        this.generalGenotype = new LinkedList<>(genotype);
         this.orientation = MapDirection.NORTH;
         this.params = parameters;
     }
@@ -35,6 +39,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.position = position;
         this.energy = energy;
         this.genotype = genotype;
+        this.generalGenotype = new LinkedList<>(genotype);
         this.orientation = MapDirection.NORTH;
         this.params = parameters;
         this.parents = parents;
@@ -87,6 +92,17 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public boolean isReadyToReproduce() {
         return this.energy > params.getMinReproduceEnergy();
+    }
+
+    public List<Integer> getGenotype(){
+        return generalGenotype;
+    }
+    public boolean hasMostPopularGenotype() {
+        return hasMostPopularGenotype;
+    }
+
+    public void setHasMostPopularGenotype(boolean hasMostPopularGenotype) {
+        this.hasMostPopularGenotype = hasMostPopularGenotype;
     }
 
     //Zwraca dziecko

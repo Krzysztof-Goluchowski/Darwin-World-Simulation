@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Simulation {
     private final SimulationParameters parameters;
-    private Board worldMap;
-    private List<Animal> animalList;
+    private final Board worldMap;
+    private final List<Animal> animalList;
     private boolean isPaused = false;
     private final List<SimulationObserver> observers = new ArrayList<>();
     private int simulationDay;
@@ -14,14 +14,11 @@ public class Simulation {
     }
 
     protected void notifyObservers() {
-        boolean isEnd = false;
-        if (animalList.isEmpty()){
-            isEnd = true;
-        }
+        boolean isEnd = animalList.isEmpty();
         for (SimulationObserver observer : observers) {
             observer.update(animalList.size(), worldMap.getPlants().size(), calculateAverageEnergy(),
                     calculateAverageLifeSpan(), worldMap.getAmountOfFreeSpots(), simulationDay,
-                    calculateAverageChildren(), isEnd);
+                    calculateAverageChildren(), isEnd, findMostPopularGenotype());
         }
     }
 
@@ -46,7 +43,7 @@ public class Simulation {
         }
         return totalEnergy / animalList.size();
     }
-    private List<Animal> allDeadAnimals = new ArrayList<>(); // Lista przechowująca wszystkie martwe zwierzęta
+    private final List<Animal> allDeadAnimals = new ArrayList<>(); // Lista przechowująca wszystkie martwe zwierzęta
 
     public double calculateAverageLifeSpan() {
         if (allDeadAnimals.isEmpty()) {
@@ -59,6 +56,27 @@ public class Simulation {
         return (double) totalLifeSpan / allDeadAnimals.size();
     }
 
+    public List<Integer> findMostPopularGenotype() {
+        Map<List<Integer>, Integer> genotypeFrequency = new HashMap<>();
+
+        // Zliczanie częstotliwości każdego genotypu
+        for (Animal animal : animalList) {
+            List<Integer> genotype = animal.getGenotype();
+            genotypeFrequency.put(genotype, genotypeFrequency.getOrDefault(genotype, 0) + 1);
+        }
+
+        // Znajdowanie najpopularniejszego genotypu
+        List<Integer> mostPopularGenotype = null;
+        int maxFrequency = 0;
+        for (Map.Entry<List<Integer>, Integer> entry : genotypeFrequency.entrySet()) {
+            if (entry.getValue() > maxFrequency) {
+                mostPopularGenotype = entry.getKey();
+                maxFrequency = entry.getValue();
+            }
+        }
+
+        return mostPopularGenotype;
+    }
 
     public Simulation(SimulationParameters parameters, Board worldMap, List<Animal> animalList) {
         this.parameters = parameters;
@@ -67,10 +85,23 @@ public class Simulation {
     }
 
     public void pause() {
+        List<Integer> mostPopularGenotype = findMostPopularGenotype();
+
+        for (Animal animal : animalList) {
+            if (animal.getGenotype().equals(mostPopularGenotype)) {
+                animal.setHasMostPopularGenotype(true);
+            } else {
+                animal.setHasMostPopularGenotype(false);
+            }
+        }
         isPaused = true;
     }
 
     public void resume() {
+        for (Animal animal : animalList) {
+            animal.setHasMostPopularGenotype(false);
+        }
+
         isPaused = false;
     }
 
@@ -164,7 +195,7 @@ public class Simulation {
         // Przeszukiwanie każdej pozycji w poszukiwaniu par do rozmnażania
         for (List<Animal> animalsOnPosition : animalsByPosition.values()) {
             if (animalsOnPosition.size() >= 2) {
-                Collections.sort(animalsOnPosition); // Rozstrzygamy tym możliwe konflikty
+                Collections.sort(animalsOnPosition);
                 for (int i = 0; i < animalsOnPosition.size(); i++) {
                     Animal animal1 = animalsOnPosition.get(i);
                     if (animal1.isReadyToReproduce()) {
@@ -174,7 +205,7 @@ public class Simulation {
                                 Animal child = animal1.reproduce(animal2);
                                 animalList.add(child);
                                 worldMap.place(child);
-                                break; // chyba tylko raz dziennie mozna sie rozmnazac
+                                break;
                             }
                         }
                     }
