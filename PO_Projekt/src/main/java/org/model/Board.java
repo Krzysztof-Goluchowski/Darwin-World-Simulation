@@ -215,4 +215,8 @@ public class Board {
         Vector2D topRight = new Vector2D(width - 1, height - 1);
         return visualizer.draw(bottomLeft, topRight);
     }
+
+    public Map<Vector2D, Vector2D> getTunnelsMaps() {
+        return null;
+    }
 }
