@@ -1,7 +1,8 @@
 package org.model.presenter;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -74,9 +75,8 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private CheckBox createCSVCheckBox;
     private SimulationEngine engine;
     private Board worldMap;
-    private String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
-
-    private HashMap<String, int[]> settings = new HashMap<>();
+    private final String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
+    private final HashMap<String, int[]> settings = new HashMap<>();
     private SimulationPresenter presenter;
     private PrintWriter csvWriter;
     private boolean saveToCSV;
@@ -84,8 +84,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private boolean isPaused;
     private ArrayList<Animal> animalArrayList;
     private Animal trackedAnimal;
-
-
     private SimulationParameters simulationParameters;
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
@@ -96,7 +94,48 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (defaultConfigurationsListView != null) {
+
             defaultConfigurationsListView.getItems().addAll(defaultSettings);
+
+            settings.put("Easy", new int[]{5, 5, 0, 2, 15, 5, 3, 1, 5, 15, 3, 0, 0, 25, 40, 0});
+            settings.put("Hard", new int[]{10, 10, 2, 5, 5, 1, 2, 2, 10, 10, 5, 0, 0, 30, 30, 0});
+            settings.put("Endless Simulation", new int[]{5, 5, 2, 3, 20, 10, 4, 0, 7, 15, 4, 0, 0, 30, 50, 0});
+            defaultConfigurationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    String selectedOption = defaultConfigurationsListView.getSelectionModel().getSelectedItem();
+
+                    int[] parameters = settings.get(selectedOption);
+
+                    minReproduceEnergyLabel.getValueFactory().setValue(parameters[0]);
+                    energyLostOnReproductionLabel.getValueFactory().setValue(parameters[1]);
+                    minMutationsLabel.getValueFactory().setValue(parameters[2]);
+                    maxMutationsLabel.getValueFactory().setValue(parameters[3]);
+                    startingAmountOfPlantsLabel.getValueFactory().setValue(parameters[4]);
+                    newPlantPerDayLabel.getValueFactory().setValue(parameters[5]);
+                    plantEnergyLabel.getValueFactory().setValue(parameters[6]);
+                    energyLostPerDayLabel.getValueFactory().setValue(parameters[7]);
+                    genotypeSizeLabel.getValueFactory().setValue(parameters[8]);
+                    startingAnimalEnergyLabel.getValueFactory().setValue(parameters[9]);
+                    animalsAmountOnStartLabel.getValueFactory().setValue(parameters[10]);
+
+                    if (parameters[11] == 0){
+                        mapVariantComboBox.setValue("STANDARD");
+                    } else {
+                        mapVariantComboBox.setValue("TUNNELS");
+                    }
+
+                    if (parameters[12] == 0){
+                        mutationVariantComboBox.setValue("RANDOM");
+                    } else {
+                        mutationVariantComboBox.setValue("SWAP");
+                    }
+
+                    mapHeightLabel.getValueFactory().setValue(parameters[13]);
+                    mapWidthLabel.getValueFactory().setValue(parameters[14]);
+                    numberOfTunnelsLabel.getValueFactory().setValue(parameters[15]);
+                }
+            });
         }
     }
     @FXML
@@ -119,22 +158,22 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
 
         int[] savedSettings = new int[]{
-                (int) minReproduceEnergyLabel.getValue(),
-                (int) energyLostOnReproductionLabel.getValue(),
-                (int) minMutationsLabel.getValue(),
-                (int) maxMutationsLabel.getValue(),
-                (int) startingAmountOfPlantsLabel.getValue(),
-                (int) newPlantPerDayLabel.getValue(),
-                (int) plantEnergyLabel.getValue(),
-                (int) energyLostPerDayLabel.getValue(),
-                (int) genotypeSizeLabel.getValue(),
-                (int) startingAnimalEnergyLabel.getValue(),
-                (int) animalsAmountOnStartLabel.getValue(),
+                minReproduceEnergyLabel.getValue(),
+                energyLostOnReproductionLabel.getValue(),
+                minMutationsLabel.getValue(),
+                maxMutationsLabel.getValue(),
+                startingAmountOfPlantsLabel.getValue(),
+                newPlantPerDayLabel.getValue(),
+                plantEnergyLabel.getValue(),
+                energyLostPerDayLabel.getValue(),
+                genotypeSizeLabel.getValue(),
+                startingAnimalEnergyLabel.getValue(),
+                animalsAmountOnStartLabel.getValue(),
                 map,
                 mutation,
-                (int) mapHeightLabel.getValue(),
-                (int) mapWidthLabel.getValue(),
-                (int) numberOfTunnelsLabel.getValue()
+                mapHeightLabel.getValue(),
+                mapWidthLabel.getValue(),
+                numberOfTunnelsLabel.getValue()
 
         };
 
@@ -157,7 +196,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         this.isPaused = true;
         drawMap();
     }
-
     @FXML
     public void onResumeClicked() {
         this.isPaused = false;
@@ -178,7 +216,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         createSimulationStage(map, engine, animalList);
         engine.runAsync();
     }
-
     private Board configureMap(SimulationParameters simulationParameters) {
         int mapHeight = mapHeightLabel.getValue();
         int mapWidth = mapWidthLabel.getValue();
@@ -210,7 +247,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         SimulationPresenter presenter = loader.getController();
         this.presenter = presenter;
         presenter.setWorldMap(map);
-        presenter.referenceEnergy = (int) startingAmountOfPlantsLabel.getValue();
+        presenter.referenceEnergy = startingAmountOfPlantsLabel.getValue();
         presenter.saveToCSV = createCSVCheckBox.isSelected();
 
         if(presenter.saveToCSV){
@@ -356,6 +393,15 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                     cell.getChildren().add(plantShape);
                 }
 
+                if (worldMap instanceof BoardWithTunnels){
+                    Map<Vector2D, Vector2D> tunnels = worldMap.getTunnelsMaps();
+                    Vector2D tunnelSpot = new Vector2D(i, j);
+                    if (tunnels.containsKey(tunnelSpot) || tunnels.containsValue(tunnelSpot)){
+                        Rectangle tunnelShape = new Rectangle(30, 30);
+                        tunnelShape.setFill(Color.BLACK);
+                        cell.getChildren().add(tunnelShape);
+                    }
+                }
 
                 int column = i;
                 int row = j;
