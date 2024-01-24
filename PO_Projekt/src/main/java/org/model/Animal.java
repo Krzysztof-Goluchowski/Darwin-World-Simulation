@@ -9,21 +9,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private int daysSurvived = 0;
     private List<Animal> parents;
     private int amountOfChildren = 0;
-    private int howManyPlantsEaten = 0;
-    private int dayOfDeath;
     private Vector2D position;
     private MapDirection orientation;
     private final List<Integer> genotype;
     private final SimulationParameters params;
-
-//    public Animal(Vector2D position, int energy, List<Integer> genotype, SimulationParameters parameters, List<Animal> parents){
-//        this.position = position;
-//        this.energy = energy;
-//        this.genotype = genotype;
-//        this.orientation = MapDirection.NORTH;
-//        this.params = parameters;
-//        this.parents = parents;
-//    }
 
     //Adam i Ewa
     public Animal(SimulationParameters parameters){
@@ -67,12 +56,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.position = position;
     }
 
-    public void setDayOfDeath(int dayOfDeath) {
-        this.dayOfDeath = dayOfDeath;
-    }
-
     public int getDaysSurvived() {
         return daysSurvived;
+    }
+
+    public int getAmountOfChildren(){
+        return amountOfChildren;
     }
 
     public int getEnergy() {
@@ -87,18 +76,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return orientation;
     }
 
-    public List<Integer> getGenotype() {
-        return genotype;
-    }
-
 
     public void move(Vector2D newPosition){
         this.position = newPosition;
     }
 
-    public void consumePlant(Plant plant){
+    public void consumePlant(){
         this.energy += params.getPlantEnergy();
-        howManyPlantsEaten++;
     }
 
     public boolean isReadyToReproduce() {

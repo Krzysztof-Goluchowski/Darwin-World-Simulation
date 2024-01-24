@@ -148,8 +148,7 @@ public class SimulationTest {
 
         if (plantsMap.containsKey(chomik.getPosition())) {
             Vector2D animalPosition = chomik.getPosition();
-            Plant plant = plantsMap.get(animalPosition);
-            chomik.consumePlant(plant);
+            chomik.consumePlant();
             plantsMap.remove(animalPosition);
         }
 
