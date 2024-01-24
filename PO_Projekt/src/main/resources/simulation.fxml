@@ -14,18 +14,28 @@
     <left>
         <VBox spacing="20" alignment="CENTER_LEFT" prefWidth="300" style="-fx-padding: 20 20 20 20;">
             <Label fx:id="simulationDayLabel" text="Dzień symulacji:"/>
-            <Label fx:id="animalCountLabel" text="Liczba zwierząt:"/>
-            <Label fx:id="plantCountLabel" text="Liczba roślin:"/>
-            <Label fx:id="averageEnergyLabel" text="Średnia energia:"/>
-            <Label fx:id="averageLifespanLabel" text="Średnia długość życia:"/>
+            <Label fx:id="animalCountLabel" text="Liczba zwierzat:"/>
+            <Label fx:id="plantCountLabel" text="Liczba roslin:"/>
+            <Label fx:id="averageEnergyLabel" text="Srednia energia:"/>
+            <Label fx:id="averageLifespanLabel" text="Srednia dlugość zycia:"/>
             <Label fx:id="freeSpotsLabel" text="Liczba wolnych miejsc:"/>
             <Label fx:id="mostPopularGenotypeLabel" text="Najpopularniejszy genotyp:"/>
-            <Label fx:id="averageNumberOfChildrenLabel" text="Średnia liczba dzieci:"/>
+            <Label fx:id="averageNumberOfChildrenLabel" text="Srednia liczba dzieci:"/>
 
             <HBox spacing="50" alignment="CENTER">
                 <Button text="Pause" onAction="#onPauseClicked"/>
                 <Button text="Resume" onAction="#onResumeClicked"/>
             </HBox>
+
+            <Label fx:id="animalGenotype" text="Genotyp zwierzaka: "/>
+            <Label fx:id="animalActiveGenome" text="Aktywny gen: "/>
+            <Label fx:id="animalEnergy" text="Energia zwierzaka: "/>
+            <Label fx:id="animalCountOfConsumedPlants" text="Zjedzonych roslin: "/>
+            <Label fx:id="animalCountOfChildren" text="Liczba dzieci: "/>
+            <Label fx:id="animalCountOfDescendant" text="Liczba potomkow: "/>
+            <Label fx:id="animalDaysSurvived" text="Przetrwane dni: "/>
+            <Label fx:id="animalDayOfDeath" text="Dzien smierci: "/>
+            <Button text="Zatrzymaj śledzenie" onAction="#onStopTrackingClicked"/>
 
         </VBox>
     </left>

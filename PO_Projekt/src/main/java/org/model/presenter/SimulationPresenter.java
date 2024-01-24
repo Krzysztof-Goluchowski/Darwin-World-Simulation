@@ -1,6 +1,7 @@
 package org.model.presenter;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -26,55 +28,46 @@ import java.util.*;
 
 public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML
-    private Spinner startingAmountOfPlantsLabel;
+    private Spinner<Integer> startingAmountOfPlantsLabel;
     @FXML
-    private Spinner minReproduceEnergyLabel;
+    private Spinner<Integer> minReproduceEnergyLabel;
     @FXML
-    private Spinner energyLostOnReproductionLabel;
+    private Spinner<Integer> energyLostOnReproductionLabel;
     @FXML
-    private Spinner minMutationsLabel;
+    private Spinner<Integer> minMutationsLabel;
     @FXML
-    private Spinner maxMutationsLabel;
+    private Spinner<Integer> maxMutationsLabel;
     @FXML
-    private Spinner newPlantPerDayLabel;
+    private Spinner<Integer> newPlantPerDayLabel;
     @FXML
-    private Spinner energyLostPerDayLabel;
+    private Spinner<Integer> energyLostPerDayLabel;
     @FXML
-    private Spinner genotypeSizeLabel;
+    private Spinner<Integer> genotypeSizeLabel;
     @FXML
-    private Spinner plantEnergyLabel;
+    private Spinner<Integer> plantEnergyLabel;
     @FXML
-    private Spinner startingAnimalEnergyLabel;
+    private Spinner<Integer> startingAnimalEnergyLabel;
     @FXML
-    private Spinner mapHeightLabel;
+    private Spinner<Integer> mapHeightLabel;
     @FXML
-    private Spinner mapWidthLabel;
+    private Spinner<Integer> mapWidthLabel;
     @FXML
-    private Spinner animalsAmountOnStartLabel;
+    private Spinner<Integer> animalsAmountOnStartLabel;
     @FXML
-    private Spinner numberOfTunnelsLabel;
+    private Spinner<Integer> numberOfTunnelsLabel;
     @FXML
     private ComboBox<String> mutationVariantComboBox;
     @FXML
     private ComboBox<String> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
-    @FXML
-    private Label animalCountLabel;
-    @FXML
-    private Label plantCountLabel;
-    @FXML
-    private Label averageEnergyLabel;
-    @FXML
-    private Label averageLifespanLabel;
-    @FXML
-    private Label freeSpotsLabel;
-    @FXML
-    private Label mostPopularGenotypeLabel;
-    @FXML
-    public Label averageNumberOfChildrenLabel;
-    @FXML
-    public Label simulationDayLabel;
+
+    @FXML private Label animalCountLabel, plantCountLabel, averageEnergyLabel,
+            averageLifespanLabel, freeSpotsLabel, mostPopularGenotypeLabel,
+            averageNumberOfChildrenLabel, simulationDayLabel, animalGenotype, animalActiveGenome, animalEnergy,
+            animalCountOfConsumedPlants, animalCountOfChildren, animalCountOfDescendant, animalDaysSurvived,
+            animalDayOfDeath ;
+
     @FXML
     private ListView<String> defaultConfigurationsListView;
     @FXML
@@ -82,40 +75,30 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private SimulationEngine engine;
     private Board worldMap;
     private String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
-    private String selectedOption;
+
     private HashMap<String, int[]> settings = new HashMap<>();
     private SimulationPresenter presenter;
     private PrintWriter csvWriter;
+    private boolean saveToCSV;
+    private int referenceEnergy;
+    private boolean isPaused;
+    private ArrayList<Animal> animalArrayList;
+    private Animal trackedAnimal;
+
 
     private SimulationParameters simulationParameters;
-
     public void setWorldMap(Board worldMap) {
         this.worldMap = worldMap;
     }
-
     public void setSimulationParameters(SimulationParameters simulationParameters){
         this.simulationParameters = simulationParameters;
     }
-
-    public SimulationPresenter() {
-        try {
-            // Utworzenie i otwarcie pliku do zapisu
-            FileWriter fileWriter = new FileWriter("simulation_stats.csv", true); // Ustaw true dla zachowania danych przy każdym uruchomieniu
-            csvWriter = new PrintWriter(fileWriter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (defaultConfigurationsListView != null) {
-
             defaultConfigurationsListView.getItems().addAll(defaultSettings);
-            });
         }
     }
-
     @FXML
     public void onSaveConfiguration(){
         String mapVariant = mapVariantComboBox.getValue();
@@ -157,7 +140,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
         defaultConfigurationsListView.getItems().add("New Settings " + (settings.size() - 2));
         settings.put("New Settings " + (settings.size() - 2), savedSettings);
-
     }
 
     @FXML
@@ -184,8 +166,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML
     public void onSimulationStartClicked() throws IOException {
 
-        this.referenceEnergy = Integer.parseInt(startingAnimalEnergyLabel.getText());
-
         SimulationParameters simulationParameters = getParameters();
 
         ArrayList<Animal> animalList = generateAnimals(simulationParameters);
@@ -195,16 +175,14 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
         simulation.addObserver(this);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
-
-        createSimulationStage(map, engine, simulationParameters);
-
+        createSimulationStage(map, engine, animalList);
         engine.runAsync();
     }
 
     private Board configureMap(SimulationParameters simulationParameters) {
-        int mapHeight = (int) mapHeightLabel.getValue();
-        int mapWidth = (int) mapWidthLabel.getValue();
-        int numberOfTunnels = (int) numberOfTunnelsLabel.getValue();
+        int mapHeight = mapHeightLabel.getValue();
+        int mapWidth = mapWidthLabel.getValue();
+        int numberOfTunnels = numberOfTunnelsLabel.getValue();
 
         return createMap(simulationParameters.getMapVariant(), mapWidth, mapHeight, numberOfTunnels);
     }
@@ -217,9 +195,10 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
     }
 
-    private void createSimulationStage(Board map, SimulationEngine engine, SimulationParameters simulationParameters) throws IOException {
-
-
+    public void setAnimalArrayList(ArrayList<Animal> animalArrayList) {
+        this.animalArrayList = animalArrayList;
+    }
+    private void createSimulationStage(Board map, SimulationEngine engine, ArrayList<Animal> animalArrayList) throws IOException {
         Stage simulationStage = new Stage();
         simulationStage.setTitle("Running simulation");
 
@@ -231,7 +210,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         SimulationPresenter presenter = loader.getController();
         this.presenter = presenter;
         presenter.setWorldMap(map);
-        presenter.referenceEnergy = Integer.parseInt(startingAmountOfPlantsLabel.getText());
+        presenter.referenceEnergy = (int) startingAmountOfPlantsLabel.getValue();
         presenter.saveToCSV = createCSVCheckBox.isSelected();
 
         if(presenter.saveToCSV){
@@ -244,8 +223,8 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
 
         presenter.setSimulationParameters(simulationParameters);
-
         presenter.setEngine(engine);
+        presenter.setAnimalArrayList(animalArrayList);
 
         ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
         map.setObserver(observer);
@@ -271,16 +250,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     }
     @FXML
     private SimulationParameters getParameters(){
-        int startingAmountOfPlants = (int) startingAmountOfPlantsLabel.getValue();
-        int minReproduceEnergy = (int) minReproduceEnergyLabel.getValue();
-        int energyLostOnReproduction = (int) energyLostOnReproductionLabel.getValue();
-        int minMutations = (int) minMutationsLabel.getValue();
-        int maxMutations = (int) maxMutationsLabel.getValue();
-        int newPlantsPerDay = (int) newPlantPerDayLabel.getValue();
-        int energyLostPerDay = (int) energyLostPerDayLabel.getValue();
-        int genotypeSize = (int) genotypeSizeLabel.getValue();
-        int plantEnergy = (int) plantEnergyLabel.getValue();
-        int startingAnimalEnergy = (int) startingAnimalEnergyLabel.getValue();
+
+        int startingAmountOfPlants = startingAmountOfPlantsLabel.getValue();
+        int minReproduceEnergy = minReproduceEnergyLabel.getValue();
+        int energyLostOnReproduction = energyLostOnReproductionLabel.getValue();
+        int minMutations = minMutationsLabel.getValue();
+        int maxMutations = maxMutationsLabel.getValue();
+        int newPlantsPerDay = newPlantPerDayLabel.getValue();
+        int energyLostPerDay = energyLostPerDayLabel.getValue();
+        int genotypeSize = genotypeSizeLabel.getValue();
+        int plantEnergy = plantEnergyLabel.getValue();
+        int startingAnimalEnergy = startingAnimalEnergyLabel.getValue();
 
         String mutationVariantString = mutationVariantComboBox.getValue();
         String mapVariantString = mapVariantComboBox.getValue();
@@ -326,6 +306,10 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
             mapGrid.getRowConstraints().add(new RowConstraints(30));
         }
 
+        if (trackedAnimal != null){
+            updateTrackingAnimal(trackedAnimal);
+        }
+
         for (int i = 0; i < worldMap.getWidth(); i++) {
             for (int j = 0; j < worldMap.getHeight(); j++) {
                 StackPane cell = new StackPane();
@@ -354,28 +338,34 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                         highlightCircle.setFill(Color.PURPLE);
                         cell.getChildren().add(highlightCircle);
                     }
+
+                    if (animal.equals(trackedAnimal)) {
+                        Polygon triangle = new Polygon();
+                        triangle.getPoints().addAll(
+                                15.0, 0.0, // Górny punkt
+                                0.0, 30.0, // Lewy dolny punkt
+                                30.0, 30.0 // Prawy dolny punkt
+                        );
+                        triangle.setFill(Color.BLUE);
+                        cell.getChildren().add(triangle);
+                    }
+
                 } else if (mapObject instanceof Plant) {
                     Circle plantShape = new Circle(15);
                     plantShape.setFill(Color.GREEN);
                     cell.getChildren().add(plantShape);
                 }
 
-                if (simulationParameters.getMapVariant() == SimulationParameters.MapVariant.TUNNELS){
-                    Map<Vector2D, Vector2D> tunnels = worldMap.getTunnelsMaps();
-                    Vector2D tunnelSpot = new Vector2D(i, j);
-                    if (tunnels.containsKey(tunnelSpot) || tunnels.containsValue(tunnelSpot)){
-                        Rectangle tunnelShape = new Rectangle(30, 30);
-                        tunnelShape.setFill(Color.BLACK);
-                        cell.getChildren().add(tunnelShape);
-                    }
-                }
+
+                int column = i;
+                int row = j;
+                cell.setOnMouseClicked(event -> handleCellClick(row, column));
 
                 GridPane.setHalignment(cell, HPos.CENTER);
                 mapGrid.add(cell, i, j);
             }
         }
     }
-
     private String mapEnergyToColor(int energy, int referenceEnergy) {
         double energyRatio = (double) energy / referenceEnergy;
 
@@ -392,6 +382,35 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
     }
 
+    private void updateTrackingAnimal(Animal animal) {
+        animalGenotype.setText("Genotyp zwierzaka: " + animal.getGenotype());
+
+        int numberOfGenotype = animal.getDaysSurvived() % animal.getGenotype().size();
+
+        animalActiveGenome.setText("Aktywny gen: " + animal.getGenotype().get(numberOfGenotype));
+        animalEnergy.setText("Energia zwierzaka: " + animal.getEnergy());
+        animalCountOfConsumedPlants.setText("Zjedzonych roslin: " + animal.getConsumedPlants());
+        animalCountOfChildren.setText("Liczba dzieci: " + animal.getAmountOfCloseChildren());
+        animalCountOfDescendant.setText("Liczba potomkow: " + animal.getAmountOfChildren());
+        animalDaysSurvived.setText("Przetrwane dni: " + animal.getDaysSurvived());
+        animalDayOfDeath.setText("Dzien smierci: ");
+        if (animal.getEnergy() <= 0){
+            animalDayOfDeath.setText("Dzien smierci: " + animal.getDayOfDeath());
+        }
+    }
+
+    private void handleCellClick(int row, int column) {
+        Vector2D pointedPosition = new Vector2D(column, row);
+
+        for (Animal animal : animalArrayList) {
+            if (Objects.equals(animal.getPosition(), pointedPosition)){
+                trackedAnimal = animal;
+                updateTrackingAnimal(animal);
+                break;
+            }
+        }
+    }
+
     private synchronized void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
         mapGrid.getColumnConstraints().clear();
@@ -399,7 +418,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     }
 
     private ArrayList<Animal> generateAnimals(SimulationParameters simulationParameters) {
-        int animalsAmountOnStart = (int) animalsAmountOnStartLabel.getValue();
+        int animalsAmountOnStart = animalsAmountOnStartLabel.getValue();
         ArrayList<Animal> animalList = new ArrayList<>();
         for (int i = 0; i < animalsAmountOnStart; i++){
             animalList.add(new Animal(simulationParameters));
@@ -435,5 +454,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         if (csvWriter != null) {
             csvWriter.close();
         }
+    }
+
+    public void onStopTrackingClicked() {
+        trackedAnimal = null;
+        animalGenotype.setText("Genotyp zwierzaka: ");
+        animalActiveGenome.setText("Aktywny gen: ");
+        animalEnergy.setText("Energia zwierzaka: ");
+        animalCountOfConsumedPlants.setText("Zjedzonych roslin: ");
+        animalCountOfChildren.setText("Liczba dzieci: ");
+        animalCountOfDescendant.setText("Liczba potomkow:");
+        animalDaysSurvived.setText("Przetrwane dni: ");
+        animalDayOfDeath.setText("Dzien smierci: ");
     }
 }

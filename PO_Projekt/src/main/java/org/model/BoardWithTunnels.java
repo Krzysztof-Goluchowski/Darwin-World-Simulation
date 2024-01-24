@@ -53,8 +53,7 @@ public class BoardWithTunnels extends Board {
 
         super.move(animal); // Wywołanie oryginalnej metody move
     }
-
-
+  
     public Map<Vector2D, Vector2D> getTunnelsMaps() {
         return tunnelsMaps;
     }
