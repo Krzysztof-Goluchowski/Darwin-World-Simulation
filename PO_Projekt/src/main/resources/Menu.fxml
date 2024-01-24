@@ -35,44 +35,44 @@
     </rowConstraints>
 
     <Label text="Min Reproduce Energy: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-    <TextField fx:id="minReproduceEnergyLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" text="10"/>
+    <Spinner fx:id="minReproduceEnergyLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" editable="true" initialValue="10" min="0" max="99"/>
 
-    <Label text="Enerdy Lost On Reproduction: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-    <TextField fx:id="energyLostOnReproductionLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" text="10"/>
+    <Label text="Energy Lost On Reproduction: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <Spinner editable="true" initialValue="10" min="0" max="99" fx:id="energyLostOnReproductionLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
     <Label text="Min Mutations: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-    <TextField fx:id="minMutationsLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" text="1"/>
+    <Spinner editable="true" initialValue="1" min="0" max="99" fx:id="minMutationsLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
     <Label text="Max Mutations: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-    <TextField fx:id="maxMutationsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" text="3"/>
+    <Spinner editable="true" initialValue="3" min="0" max="99" fx:id="maxMutationsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
     <Label text="Starting Amount Of Plants:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    <TextField fx:id="startingAmountOfPlantsLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" text="10"/>
+    <Spinner editable="true" initialValue="10" min="0" max="99" fx:id="startingAmountOfPlantsLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
     <Label text="Amount Of New Plants Per Day: " GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-    <TextField fx:id="newPlantPerDayLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" text="2"/>
+    <Spinner editable="true" initialValue="2" min="0" max="99" fx:id="newPlantPerDayLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
     <Label text="Plant Energy: " GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-    <TextField fx:id="plantEnergyLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" text="1"/>
+    <Spinner fx:id="plantEnergyLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" editable="true" initialValue="1" min="0" max="99"/>
 
     <Label text="Energy Lost Per Day: " GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-    <TextField fx:id="energyLostPerDayLabel" GridPane.rowIndex="7" GridPane.columnIndex="1" text="1"/>
+    <Spinner fx:id="energyLostPerDayLabel" GridPane.rowIndex="7" GridPane.columnIndex="1" editable="true" initialValue="1" min="0" max="99"/>
 
     <Label text="Genotype Size: " GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-    <TextField fx:id="genotypeSizeLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" text="5"/>
+    <Spinner fx:id="genotypeSizeLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" editable="true" initialValue="5" min="0" max="99"/>
 
     <Label text="Starting Animal Energy: " GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-    <TextField fx:id="startingAnimalEnergyLabel" GridPane.rowIndex="9" GridPane.columnIndex="1" text="10"/>
+    <Spinner fx:id="startingAnimalEnergyLabel" GridPane.rowIndex="9" GridPane.columnIndex="1" editable="true" initialValue="10" min="0" max="99"/>
 
     <Label text="Amount Of Animals On Start: " GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-    <TextField fx:id="animalsAmountOnStartLabel" GridPane.rowIndex="10" GridPane.columnIndex="1" text="2"/>
+    <Spinner fx:id="animalsAmountOnStartLabel" GridPane.rowIndex="10" GridPane.columnIndex="1" editable="true" initialValue="10" min="1" max="25"/>
 
     <Label text="Map Variant: " GridPane.rowIndex="11" GridPane.columnIndex="0"/>
     <ComboBox fx:id="mapVariantComboBox" GridPane.rowIndex="11" GridPane.columnIndex="1" value="STANDARD">
         <items>
             <FXCollections fx:factory="observableArrayList">
-                <String fx:value="STANDARD" />
-                <String fx:value="TUNNELS" />
+                <String fx:value="STANDARD"/>
+                <String fx:value="TUNNELS"/>
             </FXCollections>
         </items>
     </ComboBox>
@@ -88,13 +88,13 @@
     </ComboBox>
 
     <Label text="Map Height: " GridPane.rowIndex="13" GridPane.columnIndex="0"/>
-    <TextField fx:id="mapHeightLabel" GridPane.rowIndex="13" GridPane.columnIndex="1" text="20"/>
+    <Spinner fx:id="mapHeightLabel" GridPane.rowIndex="13" GridPane.columnIndex="1" editable="true" initialValue="20" min="5" max="30"/>
 
     <Label text="Map Width: " GridPane.rowIndex="14" GridPane.columnIndex="0"/>
-    <TextField fx:id="mapWidthLabel" GridPane.rowIndex="14" GridPane.columnIndex="1" text="50"/>
+    <Spinner fx:id="mapWidthLabel" GridPane.rowIndex="14" GridPane.columnIndex="1" editable="true" initialValue="40" min="5" max="50"/>
 
     <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
-    <TextField fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" text="3"/>
+    <Spinner fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" editable="true" initialValue="2" min="0" max="10"/>
 
     <Label text="Create CSV File:" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
     <CheckBox fx:id="createCSVCheckBox" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
