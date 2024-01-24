@@ -61,11 +61,13 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private ComboBox<String> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
+
     @FXML private Label animalCountLabel, plantCountLabel, averageEnergyLabel,
             averageLifespanLabel, freeSpotsLabel, mostPopularGenotypeLabel,
             averageNumberOfChildrenLabel, simulationDayLabel, animalGenotype, animalActiveGenome, animalEnergy,
             animalCountOfConsumedPlants, animalCountOfChildren, animalCountOfDescendant, animalDaysSurvived,
             animalDayOfDeath ;
+
     @FXML
     private ListView<String> defaultConfigurationsListView;
     @FXML
@@ -73,6 +75,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private SimulationEngine engine;
     private Board worldMap;
     private String[] defaultSettings = {"Easy", "Hard", "Endless Simulation"};
+
     private HashMap<String, int[]> settings = new HashMap<>();
     private SimulationPresenter presenter;
     private PrintWriter csvWriter;
@@ -81,6 +84,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private boolean isPaused;
     private ArrayList<Animal> animalArrayList;
     private Animal trackedAnimal;
+
 
     private SimulationParameters simulationParameters;
     public void setWorldMap(Board worldMap) {
@@ -171,9 +175,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
         simulation.addObserver(this);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
-
         createSimulationStage(map, engine, animalList);
-
         engine.runAsync();
     }
 
@@ -248,6 +250,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     }
     @FXML
     private SimulationParameters getParameters(){
+
         int startingAmountOfPlants = startingAmountOfPlantsLabel.getValue();
         int minReproduceEnergy = minReproduceEnergyLabel.getValue();
         int energyLostOnReproduction = energyLostOnReproductionLabel.getValue();
@@ -353,9 +356,11 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                     cell.getChildren().add(plantShape);
                 }
 
+
                 int column = i;
                 int row = j;
                 cell.setOnMouseClicked(event -> handleCellClick(row, column));
+
                 GridPane.setHalignment(cell, HPos.CENTER);
                 mapGrid.add(cell, i, j);
             }
