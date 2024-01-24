@@ -3,6 +3,7 @@ package org.model.presenter;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -56,9 +57,9 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML
     private TextField numberOfTunnelsLabel;
     @FXML
-    private ComboBox<SimulationParameters.MutationVariant> mutationVariantComboBox;
+    private ComboBox<String> mutationVariantComboBox;
     @FXML
-    private ComboBox<SimulationParameters.MapVariant> mapVariantComboBox;
+    private ComboBox<String> mapVariantComboBox;
     @FXML
     private GridPane mapGrid;
     @FXML
@@ -108,9 +109,9 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
 
             defaultConfigurationsListView.getItems().addAll(defaultSettings);
 
-            settings.put("Easy", new String[]{"5", "5", "0", "2", "15", "5", "3", "1", "5", "15", "3", "25", "40", "0"});
-            settings.put("Hard", new String[]{"10", "10", "2", "5", "5", "1", "2", "2", "10", "10", "5", "30", "30", "0"});
-            settings.put("Endless Simulation", new String[]{"5", "5", "2", "3", "20", "10", "4", "0", "7", "15", "4", "30", "50", "0"});
+            settings.put("Easy", new String[]{"5", "5", "0", "2", "15", "5", "3", "1", "5", "15", "3", "STANDARD", "RANDOM", "25", "40", "0"});
+            settings.put("Hard", new String[]{"10", "10", "2", "5", "5", "1", "2", "2", "10", "10", "5", "STANDARD", "RANDOM", "30", "30", "0"});
+            settings.put("Endless Simulation", new String[]{"5", "5", "2", "3", "20", "10", "4", "0", "7", "15", "4", "STANDARD", "RANDOM", "30", "50", "0"});
             defaultConfigurationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -129,10 +130,11 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                     genotypeSizeLabel.setText(parameters[8]);
                     startingAnimalEnergyLabel.setText(parameters[9]);
                     animalsAmountOnStartLabel.setText(parameters[10]);
-                    mapHeightLabel.setText(parameters[11]);
-                    mapWidthLabel.setText(parameters[12]);
-                    numberOfTunnelsLabel.setText(parameters[13]);
-
+                    mapVariantComboBox.setValue(parameters[11]);
+                    mutationVariantComboBox.setValue(parameters[12]);
+                    mapHeightLabel.setText(parameters[13]);
+                    mapWidthLabel.setText(parameters[14]);
+                    numberOfTunnelsLabel.setText(parameters[15]);
                 }
             });
         }
@@ -152,9 +154,12 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                 genotypeSizeLabel.getText(),
                 startingAnimalEnergyLabel.getText(),
                 animalsAmountOnStartLabel.getText(),
+                mapVariantComboBox.getValue(),
+                mutationVariantComboBox.getValue(),
                 mapHeightLabel.getText(),
                 mapWidthLabel.getText(),
                 numberOfTunnelsLabel.getText()
+
         };
 
         defaultConfigurationsListView.getItems().add("New Settings " + (settings.size() - 2));
@@ -263,8 +268,8 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         int plantEnergy = Integer.parseInt(plantEnergyLabel.getText());
         int startingAnimalEnergy = Integer.parseInt(startingAnimalEnergyLabel.getText());
 
-        String mutationVariantString = String.valueOf(mutationVariantComboBox.getValue());
-        String mapVariantString = String.valueOf(mapVariantComboBox.getValue());
+        String mutationVariantString = mutationVariantComboBox.getValue();
+        String mapVariantString = mapVariantComboBox.getValue();
 
         SimulationParameters.MutationVariant mutationVariant;
         if (Objects.equals(mutationVariantString, "RANDOM")){
