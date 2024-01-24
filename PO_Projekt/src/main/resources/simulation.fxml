@@ -27,6 +27,16 @@
                 <Button text="Resume" onAction="#onResumeClicked"/>
             </HBox>
 
+            <Label fx:id="animalGenotype" text="Genotyp zwierzaka: "/>
+            <Label fx:id="animalActiveGenome" text="Aktywny gen: "/>
+            <Label fx:id="animalEnergy" text="Energia zwierzaka: "/>
+            <Label fx:id="animalCountOfConsumedPlants" text="Zjedzonych roślin: "/>
+            <Label fx:id="animalCountOfChildren" text="Liczba dzieci: "/>
+            <Label fx:id="animalCountOfDescendant" text="Liczba potomków: "/>
+            <Label fx:id="animalDaysSurvived" text="Przetrwane dni: "/>
+            <Label fx:id="animalDayOfDeath" text="Dzień śmierci: "/>
+            <Button text="Zatrzymaj śledzenie" onAction="#onStopTrakingClicked"/>
+
         </VBox>
     </left>
 

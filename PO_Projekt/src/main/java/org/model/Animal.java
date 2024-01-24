@@ -15,6 +15,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private final List<Integer> generalGenotype;
     private final SimulationParameters params;
     private boolean hasMostPopularGenotype;
+    private int consumedPlants = 0;
+    private int dayOfDeath;
+    private int amountOfCloseChildren = 0;
+
 
     //Adam i Ewa
     public Animal(SimulationParameters parameters){
@@ -103,6 +107,30 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public void setHasMostPopularGenotype(boolean hasMostPopularGenotype) {
         this.hasMostPopularGenotype = hasMostPopularGenotype;
+    }
+
+    public int getConsumedPlants() {
+        return consumedPlants;
+    }
+
+    public void setConsumedPlants(int consumedPlants) {
+        this.consumedPlants = consumedPlants;
+    }
+
+    public int getDayOfDeath() {
+        return dayOfDeath;
+    }
+
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
+
+    public void setAmountOfCloseChildren(int amountOfCloseChildren) {
+        this.amountOfCloseChildren = amountOfCloseChildren;
+    }
+
+    public int getAmountOfCloseChildren() {
+        return amountOfCloseChildren;
     }
 
     //Zwraca dziecko

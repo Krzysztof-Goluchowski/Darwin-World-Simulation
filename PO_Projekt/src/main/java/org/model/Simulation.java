@@ -142,6 +142,7 @@ public class Simulation {
                 if (plantsMap.containsKey(animal.getPosition())) {
                     Vector2D animalPosition = animal.getPosition();
                     animal.consumePlant();
+                    animal.setConsumedPlants(animal.getConsumedPlants() + 1);
                     plantsMap.remove(animalPosition);
                 }
             }
@@ -172,6 +173,7 @@ public class Simulation {
     private void removeDeadAnimals(ArrayList<Animal> deadAnimals) {
         for (Animal animal : deadAnimals){
             Map<Vector2D, Animal> animals = worldMap.getAnimals();
+            animal.setDayOfDeath(simulationDay);
             animals.remove(animal.getPosition());
             animalList.remove(animal);
         }
@@ -203,6 +205,8 @@ public class Simulation {
                             Animal animal2 = animalsOnPosition.get(j);
                             if (animal2.isReadyToReproduce()) {
                                 Animal child = animal1.reproduce(animal2);
+                                animal1.setAmountOfCloseChildren(animal1.getAmountOfCloseChildren() + 1);
+                                animal2.setAmountOfCloseChildren(animal2.getAmountOfCloseChildren() + 1);
                                 animalList.add(child);
                                 worldMap.place(child);
                                 break;

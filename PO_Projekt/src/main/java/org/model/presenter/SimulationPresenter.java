@@ -1,6 +1,7 @@
 package org.model.presenter;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,7 +35,9 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     @FXML private GridPane mapGrid;
     @FXML private Label animalCountLabel, plantCountLabel, averageEnergyLabel,
             averageLifespanLabel, freeSpotsLabel, mostPopularGenotypeLabel,
-            averageNumberOfChildrenLabel, simulationDayLabel;
+            averageNumberOfChildrenLabel, simulationDayLabel, animalGenotype, animalActiveGenome, animalEnergy,
+            animalCountOfConsumedPlants, animalCountOfChildren, animalCountOfDescendant, animalDaysSurvived,
+            animalDayOfDeath ;
     @FXML private ListView<String> defaultConfigurationsListView;
     @FXML private CheckBox createCSVCheckBox;
     private SimulationEngine engine;
@@ -50,6 +53,10 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     private boolean saveToCSV;
     private int referenceEnergy;
     private boolean isPaused;
+
+    private ArrayList<Animal> animalArrayList;
+
+    private Animal trackedAnimal;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -144,7 +151,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         simulation.addObserver(this);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
 
-        createSimulationStage(map, engine);
+        createSimulationStage(map, engine, animalList);
 
         engine.runAsync();
     }
@@ -165,7 +172,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
     }
 
-    private void createSimulationStage(Board map, SimulationEngine engine) throws IOException {
+    private void createSimulationStage(Board map, SimulationEngine engine, ArrayList<Animal> animalArrayList) throws IOException {
         Stage simulationStage = new Stage();
         simulationStage.setTitle("Running simulation");
 
@@ -190,6 +197,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         }
 
         presenter.setEngine(engine);
+        presenter.setAnimalArrayList(animalArrayList);
 
         ConsoleMapDisplay observer = new ConsoleMapDisplay(presenter);
         map.setObserver(observer);
@@ -199,6 +207,10 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         simulationStage.setScene(scene);
         simulationStage.show();
         presenter.drawMap();
+    }
+
+    public void setAnimalArrayList(ArrayList<Animal> animalArrayList) {
+        this.animalArrayList = animalArrayList;
     }
 
     public void setEngine(SimulationEngine engine) {
@@ -270,6 +282,10 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
             mapGrid.getRowConstraints().add(new RowConstraints(30));
         }
 
+        if (trackedAnimal != null){
+            updateTrackingAnimal(trackedAnimal);
+        }
+
         for (int i = 0; i < worldMap.getWidth(); i++) {
             for (int j = 0; j < worldMap.getHeight(); j++) {
                 StackPane cell = new StackPane();
@@ -304,10 +320,44 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
                     cell.getChildren().add(plantShape);
                 }
 
+                int column = i;
+                int row = j;
+                cell.setOnMouseClicked(event -> handleCellClick(row, column));
                 GridPane.setHalignment(cell, HPos.CENTER);
                 mapGrid.add(cell, i, j);
             }
         }
+    }
+
+    private void updateTrackingAnimal(Animal animal) {
+        animalGenotype.setText("Genotyp zwierzaka: " + animal.getGenotype());
+
+        int numberOfGenotype = animal.getDaysSurvived() % animal.getGenotype().size();
+
+        animalActiveGenome.setText("Aktywny gen: " + animal.getGenotype().get(numberOfGenotype));
+        animalEnergy.setText("Energia zwierzaka: " + animal.getEnergy());
+        animalCountOfConsumedPlants.setText("Zjedzonych roślin: " + animal.getConsumedPlants());
+        animalCountOfChildren.setText("Liczba dzieci: " + animal.getAmountOfCloseChildren());
+        animalCountOfDescendant.setText("Liczba potomków: " + animal.getAmountOfChildren());
+        animalDaysSurvived.setText("Przetrwane dni: " + animal.getDaysSurvived());
+        animalDayOfDeath.setText("Dzień śmierci: ");
+        if (animal.getEnergy() <= 0){
+            animalDayOfDeath.setText("Dzień śmierci: " + animal.getDayOfDeath());
+        }
+    }
+
+    private void handleCellClick(int row, int column) {
+        Vector2D pointedPosition = new Vector2D(column, row);
+
+        for (Animal animal : animalArrayList) {
+            if (Objects.equals(animal.getPosition(), pointedPosition)){
+                trackedAnimal = animal;
+                updateTrackingAnimal(animal);
+                break;
+            }
+
+        }
+
     }
 
     private String mapEnergyToColor(int energy, int referenceEnergy) {
@@ -369,5 +419,17 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         if (csvWriter != null) {
             csvWriter.close();
         }
+    }
+
+    public void onStopTrakingClicked(ActionEvent actionEvent) {
+        trackedAnimal = null;
+        animalGenotype.setText("Genotyp zwierzaka: ");
+        animalActiveGenome.setText("Aktywny gen: ");
+        animalEnergy.setText("Energia zwierzaka: ");
+        animalCountOfConsumedPlants.setText("Zjedzonych roślin: ");
+        animalCountOfChildren.setText("Liczba dzieci: ");
+        animalCountOfDescendant.setText("Liczba potomków:");
+        animalDaysSurvived.setText("Przetrwane dni: ");
+        animalDayOfDeath.setText("Dzień śmierci: ");
     }
 }
