@@ -1,5 +1,5 @@
 .scroll-pane {
-    -fx-background: pink; /* Kolor tła */
+    -fx-background: white; /* Kolor tła */
     -fx-padding: 20; /* Wewnętrzny odstęp */
 }
 

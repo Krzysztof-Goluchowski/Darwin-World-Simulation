@@ -2,20 +2,12 @@ package org.model;
 
 import java.util.*;
 
-//Klasa tworzy Board ale z tunelami
+//Klasa tworzy Board, ale z tunelami
 public class BoardWithTunnels extends Board {
-    private final int width;
-    private final int height;
-    private final Map<Vector2D, Animal> animals;
-    private final Map<Vector2D, Plant> plants;
     Map<Vector2D, Vector2D> tunnelsMaps;
 
     public BoardWithTunnels(int width, int height, int numberOfTunnels){
         super(width, height);
-        this.width = width;
-        this.height = height;
-        this.animals = new HashMap<>();
-        this.plants = new HashMap<>();
         this.tunnelsMaps = new HashMap<>();
 
         //Losuje pary punktow i dodaje do dwoch HashMap w tunnelsMpas
@@ -45,12 +37,11 @@ public class BoardWithTunnels extends Board {
     @Override //Nadpisanie move aby uwzglednial wejscie na tunel
     public void move(Animal animal) {
         // Sprawdzanie, czy nowa pozycja zwierzęcia jest wejściem do tunelu
-        Vector2D animalPosition = animal.getPosition();
+        Vector2D animalPosition = animal.position();
         if (tunnelsMaps.containsKey(animalPosition)){
             Vector2D tunnelExit = tunnelsMaps.get(animalPosition);
             animal.move(tunnelExit);
         }
-
         super.move(animal); // Wywołanie oryginalnej metody move
     }
   

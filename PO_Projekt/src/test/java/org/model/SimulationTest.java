@@ -47,7 +47,7 @@ public class SimulationTest {
         map.place(chomik);
 
         map.move(chomik);
-        assertEquals(chomik.getPosition(), new Vector2D(2, 3));
+        assertEquals(chomik.position(), new Vector2D(2, 3));
         assertEquals(map.objectAt(new Vector2D(2, 3)), chomik);
         assertNotEquals(map.objectAt(new Vector2D(2, 2)), chomik);
     }
@@ -68,13 +68,13 @@ public class SimulationTest {
         chomik.setOrientation(MapDirection.EAST);
 
         map.move(chomik);
-        assertEquals(chomik.getPosition(), new Vector2D(4,2));
+        assertEquals(chomik.position(), new Vector2D(4,2));
 
         map.move(chomik);
-        assertEquals(chomik.getPosition(), new Vector2D(0,2));
+        assertEquals(chomik.position(), new Vector2D(0,2));
 
         map.move(chomik);
-        assertEquals(chomik.getPosition(), new Vector2D(1,2));
+        assertEquals(chomik.position(), new Vector2D(1,2));
 
         List<Integer> genotype2 = new LinkedList<>();
         genotype2.add(0);
@@ -83,13 +83,13 @@ public class SimulationTest {
         chomik2.setOrientation(MapDirection.WEST);
 
         map.move(chomik2);
-        assertEquals(chomik2.getPosition(), new Vector2D(0,2));
+        assertEquals(chomik2.position(), new Vector2D(0,2));
 
         map.move(chomik2);
-        assertEquals(chomik2.getPosition(), new Vector2D(4,2));
+        assertEquals(chomik2.position(), new Vector2D(4,2));
 
         map.move(chomik2);
-        assertEquals(chomik2.getPosition(), new Vector2D(3,2));
+        assertEquals(chomik2.position(), new Vector2D(3,2));
 
         List<Integer> genotype3 = new LinkedList<>();
         genotype3.add(0);
@@ -97,13 +97,13 @@ public class SimulationTest {
         Animal chomik3 = new Animal(new Vector2D(2, 3), 10, genotype3, simulationParameters);
 
         map.move(chomik3);
-        assertEquals(chomik3.getPosition(), new Vector2D(2,4));
+        assertEquals(chomik3.position(), new Vector2D(2,4));
 
         map.move(chomik3);
-        assertEquals(chomik3.getPosition(), new Vector2D(2,4));
+        assertEquals(chomik3.position(), new Vector2D(2,4));
 
         map.move(chomik3);
-        assertEquals(chomik3.getPosition(), new Vector2D(2,3));
+        assertEquals(chomik3.position(), new Vector2D(2,3));
 
         List<Integer> genotype4 = new LinkedList<>();
         genotype4.add(0);
@@ -112,13 +112,13 @@ public class SimulationTest {
         chomik4.setOrientation(MapDirection.SOUTH);
 
         map.move(chomik4);
-        assertEquals(chomik4.getPosition(), new Vector2D(2,0));
+        assertEquals(chomik4.position(), new Vector2D(2,0));
 
         map.move(chomik4);
-        assertEquals(chomik4.getPosition(), new Vector2D(2,0));
+        assertEquals(chomik4.position(), new Vector2D(2,0));
 
         map.move(chomik4);
-        assertEquals(chomik4.getPosition(), new Vector2D(2,1));
+        assertEquals(chomik4.position(), new Vector2D(2,1));
     }
 
     @Test
@@ -146,8 +146,8 @@ public class SimulationTest {
         Map<Vector2D, Plant> plantsMap = new HashMap<>();
         plantsMap.put(new Vector2D(2, 3), new Plant(new Vector2D(2, 3)));
 
-        if (plantsMap.containsKey(chomik.getPosition())) {
-            Vector2D animalPosition = chomik.getPosition();
+        if (plantsMap.containsKey(chomik.position())) {
+            Vector2D animalPosition = chomik.position();
             chomik.consumePlant();
             plantsMap.remove(animalPosition);
         }
@@ -189,7 +189,7 @@ public class SimulationTest {
 
         // Grupowanie zwierząt na podstawie ich pozycji
         for (Animal animal : animalList) {
-            animalsByPosition.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal);
+            animalsByPosition.computeIfAbsent(animal.position(), k -> new ArrayList<>()).add(animal);
         }
 
         // Przeszukiwanie każdej pozycji w poszukiwaniu par do rozmnażania

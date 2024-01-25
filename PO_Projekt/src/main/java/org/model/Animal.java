@@ -6,18 +6,18 @@ import java.util.Random;
 
 public class Animal implements WorldElement, Comparable<Animal> {
     private int energy;
-    private int daysSurvived = 0;
+    private int daysSurvived;
     private List<Animal> parents;
-    private int amountOfChildren = 0;
+    private int amountOfChildren;
     private Vector2D position;
-    private MapDirection orientation;
+    private MapDirection orientation = MapDirection.NORTH;
     private final List<Integer> genotype;
     private final List<Integer> generalGenotype;
     private final SimulationParameters params;
     private boolean hasMostPopularGenotype;
-    private int consumedPlants = 0;
+    private int consumedPlants;
     private int dayOfDeath;
-    private int amountOfCloseChildren = 0;
+    private int amountOfCloseChildren;
 
 
     //Adam i Ewa
@@ -77,7 +77,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return energy;
     }
 
-    public Vector2D getPosition() {
+    public Vector2D position() {
         return position;
     }
 
@@ -144,7 +144,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         LinkedList<Integer> childGenotype = crossoverGenotype(this, partner);
         mutateGenotype(childGenotype);
 
-        return new Animal(this.getPosition(), params.getEnergyLostOnReproduction(), childGenotype, this.params, childParents);
+        return new Animal(this.position(), params.getEnergyLostOnReproduction(), childGenotype, this.params, childParents);
     }
 
     //Zwieksza ilosc potomkow dla kazdego ze zwierzat
@@ -161,7 +161,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     //Krzyzuje geny rodzicow
     private LinkedList<Integer> crossoverGenotype(Animal parent1, Animal parent2) {
         int totalEnergy = parent1.getEnergy() + parent2.getEnergy();
-        int parent1Contribution = (parent1.getEnergy() * parent1.genotype.size()) / totalEnergy;
+        int parent1Contribution = (parent1.getEnergy() * parent1.getGenotype().size()) / totalEnergy;
 
         LinkedList<Integer> childGenotype = new LinkedList<>();
         Random rand = new Random();
@@ -169,11 +169,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
         boolean startFromLeft = rand.nextBoolean();
 
         if (startFromLeft) {
-            childGenotype.addAll(parent1.genotype.subList(0, parent1Contribution));
-            childGenotype.addAll(parent2.genotype.subList(parent1Contribution, parent2.genotype.size()));
+            childGenotype.addAll(parent1.getGenotype().subList(0, parent1Contribution));
+            childGenotype.addAll(parent2.getGenotype().subList(parent1Contribution, parent2.getGenotype().size()));
         } else {
-            childGenotype.addAll(parent1.genotype.subList(parent1.genotype.size() - parent1Contribution, parent1.genotype.size()));
-            childGenotype.addAll(parent2.genotype.subList(0, parent2.genotype.size() - parent1Contribution));
+            childGenotype.addAll(parent1.getGenotype().subList(parent1.getGenotype().size() - parent1Contribution, parent1.getGenotype().size()));
+            childGenotype.addAll(parent2.getGenotype().subList(0, parent2.getGenotype().size() - parent1Contribution));
         }
         return childGenotype;
     }
@@ -247,9 +247,5 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
         // Jeżeli to nie pozwala rozstrzygnąć, to wybieramy losowo
         return new Random().nextInt(2) == 0 ? -1 : 1;
-    }
-
-    public String toString() {
-        return "\u25A0"; // To jest znak kwadratu w Unicode
     }
 }

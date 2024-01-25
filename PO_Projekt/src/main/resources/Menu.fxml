@@ -34,40 +34,40 @@
         <RowConstraints minHeight="60"/>
     </rowConstraints>
 
-    <Label text="Min Reproduce Energy: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <Label text="Mininimalna energia do rozmnazania: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
     <Spinner fx:id="minReproduceEnergyLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" editable="true" initialValue="10" min="0" max="99"/>
 
-    <Label text="Energy Lost On Reproduction: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <Label text="Energia tracona na rozmnazaniu: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
     <Spinner editable="true" initialValue="10" min="0" max="99" fx:id="energyLostOnReproductionLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-    <Label text="Min Mutations: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <Label text="Minimalna liczba mutacji: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
     <Spinner editable="true" initialValue="1" min="0" max="99" fx:id="minMutationsLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-    <Label text="Max Mutations: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <Label text="Maksymalna liczba mutacji: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
     <Spinner editable="true" initialValue="3" min="0" max="99" fx:id="maxMutationsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-    <Label text="Starting Amount Of Plants:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <Label text="Poczatkowa liczba roslin:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
     <Spinner editable="true" initialValue="10" min="0" max="99" fx:id="startingAmountOfPlantsLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-    <Label text="Amount Of New Plants Per Day: " GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <Label text="Dzienna liczba nowych roslin: " GridPane.rowIndex="5" GridPane.columnIndex="0"/>
     <Spinner editable="true" initialValue="2" min="0" max="99" fx:id="newPlantPerDayLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-    <Label text="Plant Energy: " GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <Label text="Energia rosliny: " GridPane.rowIndex="6" GridPane.columnIndex="0"/>
     <Spinner fx:id="plantEnergyLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" editable="true" initialValue="1" min="0" max="99"/>
 
-    <Label text="Energy Lost Per Day: " GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <Label text="Dzienna utrata energii: " GridPane.rowIndex="7" GridPane.columnIndex="0"/>
     <Spinner fx:id="energyLostPerDayLabel" GridPane.rowIndex="7" GridPane.columnIndex="1" editable="true" initialValue="1" min="0" max="99"/>
 
-    <Label text="Genotype Size: " GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <Label text="Dlugosc genotpu: " GridPane.rowIndex="8" GridPane.columnIndex="0"/>
     <Spinner fx:id="genotypeSizeLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" editable="true" initialValue="5" min="0" max="99"/>
 
-    <Label text="Starting Animal Energy: " GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <Label text="Poczatkowa energia zwierzat: " GridPane.rowIndex="9" GridPane.columnIndex="0"/>
     <Spinner fx:id="startingAnimalEnergyLabel" GridPane.rowIndex="9" GridPane.columnIndex="1" editable="true" initialValue="10" min="0" max="99"/>
 
-    <Label text="Amount Of Animals On Start: " GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+    <Label text="Poczatkowa liczba zwierzat: " GridPane.rowIndex="10" GridPane.columnIndex="0"/>
     <Spinner fx:id="animalsAmountOnStartLabel" GridPane.rowIndex="10" GridPane.columnIndex="1" editable="true" initialValue="10" min="1" max="25"/>
 
-    <Label text="Map Variant: " GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+    <Label text="Wairant mapy: " GridPane.rowIndex="11" GridPane.columnIndex="0"/>
     <ComboBox fx:id="mapVariantComboBox" GridPane.rowIndex="11" GridPane.columnIndex="1" value="STANDARD">
         <items>
             <FXCollections fx:factory="observableArrayList">
@@ -77,7 +77,7 @@
         </items>
     </ComboBox>
 
-    <Label text="Mutation Variant: " GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+    <Label text="Wariant mutacji: " GridPane.rowIndex="12" GridPane.columnIndex="0"/>
     <ComboBox fx:id="mutationVariantComboBox" GridPane.rowIndex="12" GridPane.columnIndex="1" value="RANDOM">
         <items>
             <FXCollections fx:factory="observableArrayList">
@@ -87,32 +87,31 @@
         </items>
     </ComboBox>
 
-    <Label text="Map Height: " GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+    <Label text="Wysokosc mapy: " GridPane.rowIndex="13" GridPane.columnIndex="0"/>
     <Spinner fx:id="mapHeightLabel" GridPane.rowIndex="13" GridPane.columnIndex="1" editable="true" initialValue="20" min="5" max="30"/>
 
-    <Label text="Map Width: " GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+    <Label text="Szerokosc mapy: " GridPane.rowIndex="14" GridPane.columnIndex="0"/>
     <Spinner fx:id="mapWidthLabel" GridPane.rowIndex="14" GridPane.columnIndex="1" editable="true" initialValue="40" min="5" max="50"/>
 
-    <Label text="Number Of Tunnels:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+    <Label text="Liczba tuneli:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
     <Spinner fx:id="numberOfTunnelsLabel" GridPane.rowIndex="15" GridPane.columnIndex="1" editable="true" initialValue="2" min="0" max="10"/>
 
-    <Label text="Create CSV File:" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
-    <CheckBox fx:id="createCSVCheckBox" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
+    <Label text="Zapisz statystki do CSV:" GridPane.rowIndex="18" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="createCSVCheckBox" GridPane.rowIndex="18" GridPane.columnIndex="1"/>
 
-    <Button text="Run Simulation" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="3" GridPane.halignment="CENTER" />
-
+    <Button text="Uruchom symulacje" GridPane.rowIndex="16" GridPane.columnIndex="0" onAction="#onSimulationStartClicked" GridPane.columnSpan="3" GridPane.halignment="CENTER" />
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="2" spacing="20" GridPane.rowSpan="16" style="-fx-padding: 20 20 20 20;">
 
-        <Label text="Saved Configurations" alignment="CENTER" />
+        <Label text="Zapisane konfiguracje" alignment="CENTER" />
 
         <!-- Lista z domyślnymi ustawieniami -->
         <ListView fx:id="defaultConfigurationsListView" prefWidth="150" prefHeight="800"/>
 
         <!-- Przycisk do załadowania wybranego domyślnego ustawienia -->
 
-        <Button text="Save Configuration" prefWidth="150" onAction="#onSaveConfiguration" />
-        <Button text="Delete Configuration" prefWidth="150" onAction="#onDeleteConfiguration" />
+        <Button text="Zapisz konfiguracje" prefWidth="150" onAction="#onSaveConfiguration" />
+        <Button text="Usun konfiguracje" prefWidth="150" onAction="#onDeleteConfiguration" />
 
     </VBox>
 

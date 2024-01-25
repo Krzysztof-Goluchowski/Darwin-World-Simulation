@@ -3,12 +3,21 @@ package org.model;
 import java.util.*;
 
 public class Simulation {
+    private static final Random RAND = new Random();
     private final SimulationParameters parameters;
     private final Board worldMap;
     private final List<Animal> animalList;
     private boolean isPaused = false;
     private final List<SimulationObserver> observers = new ArrayList<>();
-    private int simulationDay;
+    private final List<Animal> allDeadAnimals = new ArrayList<>();
+    private int simulationDay = 0;
+
+    public Simulation(SimulationParameters parameters, Board worldMap, List<Animal> animalList) {
+        this.parameters = parameters;
+        this.worldMap = worldMap;
+        this.animalList = new ArrayList<>(animalList);
+    }
+
     public void addObserver(SimulationObserver observer) {
         observers.add(observer);
     }
@@ -23,37 +32,23 @@ public class Simulation {
     }
 
     public double calculateAverageChildren() {
-        if (animalList.isEmpty()) {
-            return 0;
-        }
-        int totalChildren = 0;
-        for (Animal animal : animalList) {
-            totalChildren += animal.getAmountOfChildren();
-        }
-        return (double) totalChildren / animalList.size();
+        return animalList.isEmpty() ? 0 : (double) animalList.stream()
+                .mapToInt(Animal::getAmountOfChildren)
+                .sum() / animalList.size();
     }
 
     public double calculateAverageEnergy() {
-        if (animalList.isEmpty()) {
-            return 0;
-        }
-        double totalEnergy = 0;
-        for (Animal animal : animalList) {
-            totalEnergy += animal.getEnergy();
-        }
-        return totalEnergy / animalList.size();
+        return animalList.isEmpty() ? 0 : animalList.stream()
+                .mapToDouble(Animal::getEnergy)
+                .average()
+                .orElse(0);
     }
-    private final List<Animal> allDeadAnimals = new ArrayList<>(); // Lista przechowująca wszystkie martwe zwierzęta
 
     public double calculateAverageLifeSpan() {
-        if (allDeadAnimals.isEmpty()) {
-            return 0;
-        }
-        int totalLifeSpan = 0;
-        for (Animal animal : allDeadAnimals) {
-            totalLifeSpan += animal.getDaysSurvived();
-        }
-        return (double) totalLifeSpan / allDeadAnimals.size();
+        return allDeadAnimals.isEmpty() ? 0 : allDeadAnimals.stream()
+                .mapToInt(Animal::getDaysSurvived)
+                .average()
+                .orElse(0);
     }
 
     public List<Integer> findMostPopularGenotype() {
@@ -78,21 +73,11 @@ public class Simulation {
         return mostPopularGenotype;
     }
 
-    public Simulation(SimulationParameters parameters, Board worldMap, List<Animal> animalList) {
-        this.parameters = parameters;
-        this.worldMap = worldMap;
-        this.animalList = new ArrayList<>(animalList);
-    }
-
     public void pause() {
         List<Integer> mostPopularGenotype = findMostPopularGenotype();
 
         for (Animal animal : animalList) {
-            if (animal.getGenotype().equals(mostPopularGenotype)) {
-                animal.setHasMostPopularGenotype(true);
-            } else {
-                animal.setHasMostPopularGenotype(false);
-            }
+            animal.setHasMostPopularGenotype(animal.getGenotype().equals(mostPopularGenotype));
         }
         isPaused = true;
     }
@@ -108,7 +93,7 @@ public class Simulation {
     public void run() throws InterruptedException {
         // Umieszczamy zwierzęta na mapie
         for (Animal animal : animalList) {
-            if (animal.getPosition() == null){
+            if (animal.position() == null){
                 generateNewPosition(animal);
             }
             worldMap.place(animal);
@@ -116,7 +101,6 @@ public class Simulation {
         worldMap.notifyObservers("Animals placed");
         //Tworze startowa liczbe roslin
         worldMap.generatePlants(parameters.getStartingAmountOfPlants());
-
 
         while (!animalList.isEmpty()) {
             // Usunięcie martwych zwierzaków z mapy.
@@ -139,8 +123,8 @@ public class Simulation {
             Map<Vector2D, Plant> plantsMap = worldMap.getPlants();
             Collections.sort(animalList);  // Rozstrzygamy tym możliwe konflikty
             for (Animal animal : animalList) {
-                if (plantsMap.containsKey(animal.getPosition())) {
-                    Vector2D animalPosition = animal.getPosition();
+                if (plantsMap.containsKey(animal.position())) {
+                    Vector2D animalPosition = animal.position();
                     animal.consumePlant();
                     animal.setConsumedPlants(animal.getConsumedPlants() + 1);
                     plantsMap.remove(animalPosition);
@@ -174,7 +158,7 @@ public class Simulation {
         for (Animal animal : deadAnimals){
             Map<Vector2D, Animal> animals = worldMap.getAnimals();
             animal.setDayOfDeath(simulationDay);
-            animals.remove(animal.getPosition());
+            animals.remove(animal.position());
             animalList.remove(animal);
         }
     }
@@ -191,7 +175,7 @@ public class Simulation {
 
         // Grupowanie zwierząt na podstawie ich pozycji
         for (Animal animal : animalList) {
-            animalsByPosition.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>()).add(animal);
+            animalsByPosition.computeIfAbsent(animal.position(), k -> new ArrayList<>()).add(animal);
         }
 
         // Przeszukiwanie każdej pozycji w poszukiwaniu par do rozmnażania
