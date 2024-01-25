@@ -177,19 +177,22 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     }
     @FXML
     public void onSimulationStartClicked() throws IOException {
-
         SimulationParameters simulationParameters = getParameters();
 
         ArrayList<Animal> animalList = generateAnimals(simulationParameters);
-
         Board map = configureMap(simulationParameters);
 
         Simulation simulation = new Simulation(simulationParameters, map, animalList);
-        simulation.addObserver(this);
+
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
-        createSimulationStage(map, engine, animalList);
+
+        SimulationPresenter newPresenter = createSimulationStage(map, engine, animalList);
+
+        simulation.addObserver(newPresenter);
+
         engine.runAsync();
     }
+
     private Board configureMap(SimulationParameters simulationParameters) {
         int mapHeight = mapHeightLabel.getValue();
         int mapWidth = mapWidthLabel.getValue();
@@ -209,7 +212,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     public void setAnimalArrayList(ArrayList<Animal> animalArrayList) {
         this.animalArrayList = animalArrayList;
     }
-    private void createSimulationStage(Board map, SimulationEngine engine, ArrayList<Animal> animalArrayList) throws IOException {
+    private SimulationPresenter createSimulationStage(Board map, SimulationEngine engine, ArrayList<Animal> animalArrayList) throws IOException {
         Stage simulationStage = new Stage();
         simulationStage.setTitle("Running simulation");
 
@@ -219,7 +222,6 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         Scene scene = new Scene(viewRoot);
 
         SimulationPresenter presenter = loader.getController();
-        this.presenter = presenter;
         presenter.setWorldMap(map);
         presenter.referenceEnergy = startingAmountOfPlantsLabel.getValue();
         presenter.saveToCSV = createCSVCheckBox.isSelected();
@@ -227,7 +229,7 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         if(presenter.saveToCSV){
             try {
                 FileWriter fileWriter = new FileWriter("simulation_stats.csv", true);
-                csvWriter = new PrintWriter(fileWriter);
+                presenter.csvWriter = new PrintWriter(fileWriter);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -245,6 +247,8 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
         simulationStage.setScene(scene);
         simulationStage.show();
         presenter.drawMap();
+
+        return presenter;
     }
 
     public void setEngine(SimulationEngine engine) {
@@ -450,16 +454,16 @@ public class SimulationPresenter implements Initializable, SimulationObserver {
     public void update(int animalsCount, int plantsCount, double averageEnergy,
                        double averageLifespan, int amountOfFreeSpots, int simulationDay, double averageNumberOfChildren, boolean isEnd, List<Integer> mostPopularGenotype) {
         Platform.runLater(() -> {
-            presenter.simulationDayLabel.setText("Dzien symulacji: " + simulationDay);
-            presenter.animalCountLabel.setText("Liczba zwierzat: " + animalsCount);
-            presenter.plantCountLabel.setText("Liczba roslin: " + plantsCount);
-            presenter.averageEnergyLabel.setText("Srednia energia: " + averageEnergy);
-            presenter.averageLifespanLabel.setText("Srednia dlugosc zycia: " + averageLifespan);
-            presenter.freeSpotsLabel.setText("Liczba wolnych pol: " + amountOfFreeSpots);
-            presenter.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: " + mostPopularGenotype);
-            presenter.averageNumberOfChildrenLabel.setText("Srednia liczba dzieci: " + averageNumberOfChildren);
+            this.simulationDayLabel.setText("Dzien symulacji: " + simulationDay);
+            this.animalCountLabel.setText("Liczba zwierzat: " + animalsCount);
+            this.plantCountLabel.setText("Liczba roslin: " + plantsCount);
+            this.averageEnergyLabel.setText("Srednia energia: " + averageEnergy);
+            this.averageLifespanLabel.setText("Srednia dlugosc zycia: " + averageLifespan);
+            this.freeSpotsLabel.setText("Liczba wolnych pol: " + amountOfFreeSpots);
+            this.mostPopularGenotypeLabel.setText("Najpopularniejszy genotyp: " + mostPopularGenotype);
+            this.averageNumberOfChildrenLabel.setText("Srednia liczba dzieci: " + averageNumberOfChildren);
 
-            if (presenter.saveToCSV)
+            if (this.saveToCSV)
             {
                 csvWriter.println(simulationDay + "," + animalsCount + "," + plantsCount + "," +
                         averageEnergy + "," + averageLifespan + "," +
