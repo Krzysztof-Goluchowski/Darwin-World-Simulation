@@ -32,14 +32,4 @@ public class Vector2DTest {
         assertNotEquals(vector3, vector2);
         assertNotEquals(vector4, vector2);
     }
-
-    @Test
-    public void testToString(){
-        Vector2D vector1 = new Vector2D(10, 13);
-        String positionOfVector1 = "Vector2D{x=10, y=13}";
-        String positionOfNotVector1 = "Vector2D{x=10, y=12}";
-
-        assertEquals(positionOfVector1, vector1.toString());
-        assertNotEquals(positionOfNotVector1, vector1.toString());
-    }
 }

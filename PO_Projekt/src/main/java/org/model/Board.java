@@ -1,7 +1,6 @@
 package org.model;
 
 import org.model.util.ConsoleMapDisplay;
-import org.model.util.MapVisualizer;
 
 import java.util.*;
 
@@ -57,21 +56,18 @@ public class Board {
     }
 
     public boolean canMoveTo(Vector2D position){
-        return position.getY() < this.height && position.getY() >= 0;
+        return position.y() < this.height && position.y() >= 0;
     }
 
     public void place(Animal animal) {
-        Vector2D position = animal.getPosition();
+        Vector2D position = animal.position();
         if (canMoveTo(position)) {
             animals.put(position, animal);
         }
     }
 
     public int getAmountOfFreeSpots() {
-        Set<Vector2D> occupiedPositions = new HashSet<>();
-        for (Vector2D position : animals.keySet()) {
-            occupiedPositions.add(position);
-        }
+        Set<Vector2D> occupiedPositions = new HashSet<>(animals.keySet());
 
         int totalFields = width * height;
         return totalFields - occupiedPositions.size();
@@ -87,42 +83,42 @@ public class Board {
         switch (direction){
             case NORTH -> {
                 Vector2D unitVector = MapDirection.NORTH.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.NORTH;
             }
             case NORTH_EAST -> {
                 Vector2D unitVector = MapDirection.NORTH_EAST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.NORTH_EAST;
             }
             case EAST -> {
                 Vector2D unitVector = MapDirection.EAST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.EAST;
             }
             case SOUTH_EAST -> {
                 Vector2D unitVector = MapDirection.SOUTH_EAST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.SOUTH_EAST;
             }
             case SOUTH -> {
                 Vector2D unitVector = MapDirection.SOUTH.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.SOUTH;
             }
             case SOUTH_WEST -> {
                 Vector2D unitVector = MapDirection.SOUTH_WEST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.SOUTH_WEST;
             }
             case WEST -> {
                 Vector2D unitVector = MapDirection.WEST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.WEST;
             }
             case NORTH_WEST -> {
                 Vector2D unitVector = MapDirection.NORTH_WEST.toUnitVector();
-                newPosition = animal.getPosition().add(unitVector);
+                newPosition = animal.position().add(unitVector);
                 newPotentialOrientation = MapDirection.NORTH_WEST;
             }
             default -> {
@@ -135,16 +131,12 @@ public class Board {
         }
 
         if (newPosition != null && canMoveTo(newPosition))  {
-            Vector2D oldPosition = animal.getPosition();
-
             newPosition = roundEarth(newPosition);
 
-            animals.remove(animal.getPosition());
+            animals.remove(animal.position());
             animal.move(newPosition);
             animal.setOrientation(newPotentialOrientation);
-            animals.put(animal.getPosition(), animal);
-
-//            notifyObservers("Animal moved from " + oldPosition + " to " + newPosition);
+            animals.put(animal.position(), animal);
         }
     }
 
@@ -153,10 +145,10 @@ public class Board {
     }
 
     private Vector2D roundEarth(Vector2D newPosition) {
-        if (newPosition.getX() < 0){
-            return new Vector2D(width - 1, newPosition.getY());
+        if (newPosition.x() < 0){
+            return new Vector2D(width - 1, newPosition.y());
         }
-        return new Vector2D(newPosition.getX() % width, newPosition.getY());
+        return new Vector2D(newPosition.x() % width, newPosition.y());
     }
 
     // Generowanie roślin z większą szansą na równiku
@@ -207,13 +199,6 @@ public class Board {
         int newX = random.nextInt(this.width);
 
         return new  Vector2D(newX, newY);
-    }
-
-    public String toString(){
-        MapVisualizer visualizer = new MapVisualizer(this);
-        Vector2D bottomLeft = new Vector2D(0, 0);
-        Vector2D topRight = new Vector2D(width - 1, height - 1);
-        return visualizer.draw(bottomLeft, topRight);
     }
 
     public Map<Vector2D, Vector2D> getTunnelsMaps() {

@@ -1,6 +1,6 @@
 package org.model;
 
 public interface WorldElement {
-    Vector2D getPosition();
+    Vector2D position();
     String toString();
 }

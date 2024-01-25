@@ -1,14 +1,12 @@
 package org.model;
 
-import javafx.fxml.FXMLLoader;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.model.BoardWithTunnels;
-import org.model.presenter.SimulationPresenter;
+
 import org.model.util.ConsoleMapDisplay;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +37,7 @@ public class BoardWithTunnelsTest {
         map.place(chomik);
 
         map.move(chomik);
-        assertEquals(chomik.getPosition(), new Vector2D(0, 1));
+        assertEquals(chomik.position(), new Vector2D(0, 1));
 
         map.move(chomik);
         assertEquals(map.objectAt(new Vector2D(3, 4)), chomik);
