@@ -1,3 +1,2 @@
-# PO_2023_PT1120_GOLUCHOWSKI-GRZES_PROJEKT
-Powyższy projekt realizuje praktyki zapisane w książce "Czysty kod. Podręcznik dobrego programisty" Autorstwa: Robert C. Martin.
-Grupa 1, realizowane wariancje: B-2
+# Darwin World
+Repozytorium to zawiera projekt wykonany w języku Java jako część zaliczeniowa przedmiotu. W ramach projektu wykorzystano zaawansowane koncepcje programowania obiektowego oraz umiejętności programistyczne w celu stworzenia spójnej i efektywnej symulacji. Głównym celem projektu "Darwin World" jest stworzenie wirtualnego świata, w którym rozwija się życie zwierząt na podstawie genotypów, interakcji z otoczeniem i działań ewolucyjnych. Gracz ma okazję obserwować, jak zwierzęta poruszają się po mapie, poszukują pożywienia, rozmnażają się i ewoluują. Projekt ten ma na celu zobrazowanie zasad przetrwania, konkurencji i ewolucji w prosty sposób.
